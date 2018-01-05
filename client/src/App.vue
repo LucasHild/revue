@@ -1,13 +1,18 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <Nav/>
+    <main>
+      <router-view/>
+    </main>
   </div>
 </template>
 
 <script>
+import Nav from '@/components/Nav'
+
 export default {
-  name: 'app'
+  name: 'app',
+  components: {Nav}
 }
 </script>
 
@@ -18,6 +23,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

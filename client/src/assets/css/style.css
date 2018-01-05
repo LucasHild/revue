@@ -1,0 +1,15 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+
+*:focus {
+  outline-style: none;
+  -moz-outline-style: none;
+}
+
+.button {
+  background: rgb(23, 92, 93) !important;
+  color: white;
+}
