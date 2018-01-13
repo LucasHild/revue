@@ -26,4 +26,5 @@ a {
 .button {
   background: rgb(23, 92, 93) !important;
   color: white;
+  cursor: pointer;
 }

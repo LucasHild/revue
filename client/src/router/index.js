@@ -4,6 +4,7 @@ import Home from '@/components/Home'
 import Login from '@/components/Login'
 import SignUp from '@/components/SignUp'
 import Post from '@/components/Post'
+import User from '@/components/User'
 
 Vue.use(Router)
 
@@ -30,6 +31,11 @@ export default new Router({
       path: '/post/:id',
       name: 'Post',
       component: Post
+    },
+    {
+      path: '/user/:username',
+      name: 'User',
+      component: User
     }
   ]
 })

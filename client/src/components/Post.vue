@@ -2,7 +2,7 @@
   <div class="post">
     <div class="body container">
       <h1>{{ title }}</h1>
-      <h3>by <a href="#">{{ user.username }}</a> on {{ created.date }} at {{ created.time }}</h3>
+      <h3>by <router-link :to="{ name: 'User', params: {'username': user.username} }">{{ user.username }}</router-link> on {{ created.date }} at {{ created.time }}</h3>
       <p v-html="content"></p>
       <i class="post-id">ID {{ id }}</i>
     </div>
