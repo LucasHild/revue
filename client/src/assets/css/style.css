@@ -28,3 +28,12 @@ a {
   color: white;
   cursor: pointer;
 }
+
+.error {
+  color: rgb(150, 47, 47);
+  text-align: center;
+}
+
+.deprecated-error {
+  color: rgb(204, 152, 152) !important;
+}

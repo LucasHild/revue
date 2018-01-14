@@ -1,18 +1,77 @@
 <template lang="html">
   <div class="signup">
-    <form>
+    <form @submit.prevent="signup">
       <h1>Sign Up</h1>
-      <input type="text" placeholder="Username">
-      <input type="password" placeholder="Password">
-      <input type="password" placeholder="Repeat Password">
+      <p class="error" :class="{ 'deprecated-error' : deprecatedError }">{{ error }}</p>
+      <input type="text" v-model="username" placeholder="Username">
+      <input type="email" v-model="email" placeholder="E-Mail">
+      <input type="password" v-model="password" placeholder="Password">
+      <input type="password" v-model="passwordRepeat" placeholder="Repeat Password">
+      <p v-if="!passwordsMatch" class="error">Passwords do not match!</p>
       <input class="button" type="submit" value="Sign Up">
     </form>
   </div>
 </template>
 
 <script>
+import AuthenticationService from '@/services/AuthenticationService'
+
 export default {
-  name: 'signup'
+  name: 'signup',
+
+  data() {
+    return {
+      error: '',
+      deprecatedError: false,
+      username: '',
+      password: '',
+      passwordRepeat: '',
+      email: ''
+    }
+  },
+
+  methods: {
+    signup() {
+      if (this.passwordsMatch) {
+        this.deprecatedError = false;
+        AuthenticationService.signup({
+          username: this.username,
+          password: this.password,
+          email: this.email
+        })
+        .then(response => {
+          alert('Created account ' + response.data.user.username);
+        })
+        .catch(e => {
+          this.error = e.response.data.error;
+        })
+      }
+    }
+  },
+
+  computed: {
+    passwordsMatch() {
+      return (this.password == this.passwordRepeat)
+    }
+  },
+
+  watch: {
+    username() {
+      this.deprecatedError = true;
+    },
+
+    password() {
+      this.deprecatedError = true;
+    },
+
+    passwordRepeat() {
+      this.deprecatedError = true;
+    },
+
+    email() {
+      this.deprecatedError = true;
+    }
+  }
 }
 </script>
 
