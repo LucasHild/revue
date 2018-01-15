@@ -2,8 +2,8 @@
   <nav>
     <ul>
       <li><router-link :to="{ name: 'Home', params: {} }">ReVue</router-link></li>
-      <li style="float:right"><router-link :to="{ name: 'SignUp', params: {} }">Sign Up</router-link></li>
-      <li style="float:right"><router-link :to="{ name: 'Login', params: {} }">Login</router-link></li>
+      <li v-if="!$store.state.isUserLoggedIn" style="float:right"><router-link :to="{ name: 'SignUp', params: {} }">Sign Up</router-link></li>
+      <li v-if="!$store.state.isUserLoggedIn" style="float:right"><router-link :to="{ name: 'Login', params: {} }">Login</router-link></li>
     </ul>
   </nav>
 </template>

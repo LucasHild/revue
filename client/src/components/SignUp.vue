@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="signup">
-    <form @submit.prevent="signup">
+    <form @submit.prevent="signUp">
       <h1>Sign Up</h1>
       <p class="error" :class="{ 'deprecated-error' : deprecatedError }">{{ error }}</p>
       <input type="text" v-model="username" placeholder="Username">
@@ -31,7 +31,7 @@ export default {
   },
 
   methods: {
-    signup() {
+    signUp() {
       if (this.passwordsMatch) {
         this.deprecatedError = false;
         AuthenticationService.signup({
@@ -40,7 +40,8 @@ export default {
           email: this.email
         })
         .then(response => {
-          alert('Created account ' + response.data.user.username);
+          this.$store.dispatch('setToken', response.data.token)
+          this.$store.dispatch('setUser', response.data.user)
         })
         .catch(e => {
           this.error = e.response.data.error;

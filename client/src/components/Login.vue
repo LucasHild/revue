@@ -1,17 +1,45 @@
 <template lang="html">
   <div class="login">
-    <form>
+    <form @submit.prevent="login">
       <h1>Login</h1>
-      <input type="text" placeholder="Username">
-      <input type="password" placeholder="Password">
+      <p class="error">{{ error }}</p>
+      <input v-model="username" type="text" placeholder="Username">
+      <input v-model="password" type="password" placeholder="Password">
       <input class="button" type="submit" value="Login">
     </form>
   </div>
 </template>
 
 <script>
+import AuthenticationService from '@/services/AuthenticationService'
+
 export default {
-  name: 'login'
+  name: 'login',
+
+  data() {
+    return {
+      username: '',
+      password: '',
+      error: null
+    }
+  },
+
+  methods: {
+    login() {
+      AuthenticationService.login({
+        username: this.username,
+        password: this.password,
+      })
+      .then(response => {
+        console.log(response.data);
+        this.$store.dispatch('setToken', response.data.token)
+        this.$store.dispatch('setUser', response.data.user)
+      })
+      .catch(e => {
+        this.error = e.response.data.error
+      })
+    }
+  }
 }
 </script>
 
