@@ -2,14 +2,26 @@
   <nav>
     <ul>
       <li><router-link :to="{ name: 'Home', params: {} }">ReVue</router-link></li>
+
       <li v-if="!$store.state.isUserLoggedIn" style="float:right"><router-link :to="{ name: 'SignUp', params: {} }">Sign Up</router-link></li>
       <li v-if="!$store.state.isUserLoggedIn" style="float:right"><router-link :to="{ name: 'Login', params: {} }">Login</router-link></li>
+
+      <li v-if="$store.state.isUserLoggedIn" style="float:right"><a @click="logout()">Logout</a></li>
     </ul>
   </nav>
 </template>
 
 <script>
 export default {
+  name: 'nav',
+
+  methods: {
+    logout() {
+      this.$store.dispatch('setToken', null)
+      this.$store.dispatch('setUser', null)
+      this.$router.push({name: 'Home'})
+    }
+  }
 }
 </script>
 
@@ -31,7 +43,8 @@ export default {
     color: white;
     text-align: center;
     padding: 14px 16px;
-    text-decoration: none
+    text-decoration: none;
+    cursor: pointer;
   }
 
   li a:hover {
