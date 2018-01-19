@@ -5,6 +5,7 @@ import Login from '@/components/Login'
 import SignUp from '@/components/SignUp'
 import Post from '@/components/Post'
 import User from '@/components/User'
+import CreatePost from '@/components/CreatePost'
 
 Vue.use(Router)
 
@@ -36,6 +37,11 @@ export default new Router({
       path: '/user/:username',
       name: 'User',
       component: User
+    },
+    {
+      path: '/create',
+      name: 'CreatePost',
+      component: CreatePost
     }
   ]
 })
