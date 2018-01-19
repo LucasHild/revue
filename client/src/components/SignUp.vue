@@ -3,7 +3,7 @@
     <form @submit.prevent="signUp">
       <h1>Sign Up</h1>
       <p class="error" :class="{ 'deprecated-error' : deprecatedError }">{{ error }}</p>
-      <input type="text" v-model="username" placeholder="Username">
+      <input type="text" v-model="username" placeholder="Username" ref="username">
       <input type="email" v-model="email" placeholder="E-Mail">
       <input type="password" v-model="password" placeholder="Password">
       <input type="password" v-model="passwordRepeat" placeholder="Repeat Password">
@@ -73,6 +73,10 @@ export default {
     email() {
       this.deprecatedError = true;
     }
+  },
+
+  mounted() {
+    this.$refs.username.focus();
   }
 }
 </script>

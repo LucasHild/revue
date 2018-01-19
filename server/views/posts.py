@@ -61,6 +61,10 @@ def posts_create(username):
 def posts_item(id):
     try:
         post = Post.objects(pk=id).first()
+
+        # If post has alreay been deleted
+        if not post:
+            raise ValidationError
     except ValidationError:
         return jsonify({"error": "Post not found"}), 404
 
@@ -101,3 +105,34 @@ def posts_user(username):
     ])
 
 
+@app.route("/api/posts/id/<string:id>", methods=["DELETE"])
+@login_required
+def posts_delete(username, id):
+    try:
+        post = Post.objects(pk=id).first()
+
+        # If post has alreay been deleted
+        if not post:
+            raise ValidationError
+    except ValidationError:
+        return jsonify({"error": "Post not found"}), 404
+
+    # Check whether action was called by creator of the post
+    if username != post.user.username:
+        return jsonify({"error": "You are not the creator of the post"}), 401
+
+    post_info = {
+        "id": str(post.id),
+        "title": post.title,
+        "content": post.content,
+        "user": {
+            "id": str(post.user.id),
+            "username": post.user.username
+        },
+        "comments": post.comments,
+        "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
+    }
+
+    post.delete()
+
+    return jsonify(post_info)

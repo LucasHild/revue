@@ -3,7 +3,7 @@
     <h1>Create Post</h1>
     <form @submit.prevent="create">
       <p class="error">{{ error }}</p>
-      <input v-model="title" type="text" placeholder="Title">
+      <input v-model="title" type="text" placeholder="Title" ref="title">
       <textarea v-model="content" name="name" placeholder="Content" rows="25" cols="80"></textarea>
       <input class="button" type="submit" value="Create post">
     </form>
@@ -40,6 +40,10 @@ export default {
           this.error = e.response.data.error
         })
     }
+  },
+
+  mounted() {
+    this.$refs.title.focus();
   }
 }
 </script>

@@ -3,7 +3,7 @@
     <form @submit.prevent="login">
       <h1>Login</h1>
       <p class="error">{{ error }}</p>
-      <input v-model="username" type="text" placeholder="Username">
+      <input v-model="username" type="text" placeholder="Username" ref="username">
       <input v-model="password" type="password" placeholder="Password">
       <input class="button" type="submit" value="Login">
     </form>
@@ -39,6 +39,10 @@ export default {
         this.error = e.response.data.error
       })
     }
+  },
+
+  mounted() {
+    this.$refs.username.focus();
   }
 }
 </script>

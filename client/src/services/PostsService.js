@@ -9,6 +9,10 @@ export default {
     return Api().post('posts', post)
   },
 
+  delete(id) {
+    return Api().delete('posts/id/' + id)
+  },
+
   item(id) {
     return Api().get('posts/id/' + id)
   },
