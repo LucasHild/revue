@@ -13,12 +13,19 @@
 <script>
 export default {
   name: 'post-preview',
+
   props: [
-    'description',
+    'content',
     'link',
     'img',
     'id'
-  ]
+  ],
+
+  computed: {
+    description() {
+      return this.content.slice(0, 750) + '...'
+    }
+  }
 }
 </script>
 

@@ -1,54 +1,49 @@
 <template lang="html">
   <div class="user container">
     <h1>{{ username }}</h1>
-    <div class="len-posts button">{{ lenPosts }} Posts</div>
+    <div class="len-posts button">{{ posts.length }} Posts</div>
     <div class="stars button">{{ stars }} Stars</div>
 
-    <PostPreview v-for="post in posts" :img="post.image" :description="post.content" :id="post.id" :key="post.id">{{ post.title }}</PostPreview>
+    <PostPreview
+      v-for="post in posts"
+      img="http://fillmurray.com/225/150"
+      :content="post.content"
+      :id="post.id"
+      :key="post.id"
+      >
+      {{ post.title }}
+    </PostPreview>
+
+    <CreateButton></CreateButton>
   </div>
 </template>
 
 <script>
 import PostPreview from '@/components/PostPreview'
+import CreateButton from '@/components/CreateButton'
+import PostsService from '@/services/PostsService'
 
 export default {
   name: 'user',
-  components: { PostPreview },
+
+  components: { CreateButton, PostPreview },
+
   data() {
     return {
       username: this.$route.params.username,
-      posts: [
-        {
-          id: 500,
-          title: 'Hello World',
-          user: { 'username': 'Lanseuo' },
-          image: 'http://fillmurray.com/600/200',
-          created: { date: '7 January 2018', time: '16:03' },
-          content: 'Lorem ipsum dolor sit <strong>amet</strong>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos e',
-          comments: [
-            {
-              id: 11,
-              user: { 'username': 'Lanseuo' },
-              created: { date: '7 January 2018', time: '16:03' },
-              content: 'Lorem ipsum dolor sit <strong>amet</strong>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos e',
-            },
-            {
-              id: 12,
-              user: { 'username': 'Lanseuo' },
-              created: { date: '7 January 2018', time: '16:03' },
-              content: 'Lorem ipsum dolor sit <strong>amet</strong>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos e',
-            }
-          ]
-        }
-      ],
+      posts: [],
       stars: 16
     }
   },
 
-  computed: {
-    lenPosts() {
-      return this.posts.length
-    }
+  mounted() {
+    PostsService.user(this.username)
+      .then(response => {
+        this.posts = response.data
+      })
+      .catch(e => {
+        this.error = e.response.data.error
+      })
   }
 }
 </script>

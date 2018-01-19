@@ -7,5 +7,13 @@ export default {
 
   create(post) {
     return Api().post('posts', post)
+  },
+
+  item(id) {
+    return Api().get('posts/id/' + id)
+  },
+
+  user(username) {
+    return Api().get('posts/user/' + username)
   }
 }

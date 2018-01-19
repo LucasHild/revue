@@ -36,7 +36,8 @@ class Post(Document):
     def to_json(self):
         from bson import json_util
         data = self.to_mongo()
-        data["user"] = {"User": {"username": self.user.username, "_id": self.user.id}}
+        print(data)
+        data["user"] = {"username": self.user.username, "_id": self.user.id}
         return json_util.dumps(data)
 
 # lucas = User.objects(username="Lucas").first()

@@ -4,23 +4,27 @@
     <PostPreview
       v-for="post in posts"
       img="http://fillmurray.com/225/150"
-      :description="post.content | description"
-      :id="post._id"
-      :key="post._id.$oid"
+      :content="post.content"
+      :id="post.id"
+      :key="post.id"
+      :comments="post.comments"
       >
       {{ post.title }}
     </PostPreview>
+
+    <CreateButton></CreateButton>
   </div>
 </template>
 
 <script>
 import PostPreview from '@/components/PostPreview'
 import PostsService from '@/services/PostsService'
+import CreateButton from '@/components/CreateButton'
 
 export default {
   name: 'home',
 
-  components: { PostPreview },
+  components: { PostPreview, CreateButton },
 
   data() {
     return {
@@ -28,16 +32,10 @@ export default {
     }
   },
 
-  filters: {
-    description(value) {
-      return value.slice(0, 750) + '...'
-    }
-  },
-
   mounted() {
     PostsService.index()
       .then(response => {
-        this.posts = response.data.posts
+        this.posts = response.data
       })
   }
 }

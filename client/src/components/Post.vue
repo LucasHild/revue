@@ -1,13 +1,23 @@
 <template lang="html">
   <div class="post">
     <div class="body container">
+      <p class="error">{{ error }}</p>
       <h1>{{ title }}</h1>
-      <h3>by <router-link :to="{ name: 'User', params: {'username': user.username} }">{{ user.username }}</router-link> on {{ created.date }} at {{ created.time }}</h3>
+
+      <h3>by
+        <router-link :to="{ name: 'User', params: { 'username': user.username } }">
+          {{ user.username }}
+        </router-link>
+         {{ created.date }}
+      </h3>
+
       <p v-html="content"></p>
+
       <i class="post-id">ID {{ id }}</i>
     </div>
+
     <div class="container">
-      <h2>Comments</h2>
+      <h2 v-show="comments == []" >Comments</h2>
       <Comment v-for="comment in comments" :key="comment.id" :user="comment.user" :created="comment.created" :content="comment.content"></Comment>
     </div>
   </div>
@@ -15,32 +25,35 @@
 
 <script>
 import Comment from '@/components/Comment'
+import PostsService from '@/services/PostsService'
 
 export default {
   name: 'post',
   components: { Comment },
   data() {
     return {
+      error: null,
       id: this.$route.params.id,
-      title: 'Hello World',
-      user: { 'username': 'Lanseuo' },
-      created: { date: '7 January 2018', time: '16:03' },
-      content: 'Lorem ipsum dolor sit <strong>amet</strong>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos e',
-      comments: [
-        {
-          id: 11,
-          user: { 'username': 'Lanseuo' },
-          created: { date: '7 January 2018', time: '16:03' },
-          content: 'Lorem ipsum dolor sit <strong>amet</strong>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos e',
-        },
-        {
-          id: 12,
-          user: { 'username': 'Lanseuo' },
-          created: { date: '7 January 2018', time: '16:03' },
-          content: 'Lorem ipsum dolor sit <strong>amet</strong>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos e',
-        }
-      ]
+      title: '',
+      user: '',
+      created: '',
+      content: '',
+      comments: []
     }
+  },
+
+  mounted() {
+    PostsService.item(this.id)
+      .then(response => {
+        this.title = response.data.title
+        this.user = response.data.user
+        this.created = response.data.created
+        this.content = response.data.content
+        this.comments = response.data.comments
+      })
+      .catch(e => {
+        this.error = e.response.data.error
+      })
   }
 }
 </script>
