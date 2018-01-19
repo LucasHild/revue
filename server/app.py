@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = config.flask_secret_key
 CORS(app)
 
+
 from views.authorization import *
 from views.posts import *
 
@@ -15,6 +16,7 @@ def page_not_found(e):
     return jsonify({
         "error": "API endpoint not found"
     }), 404
+
 
 @app.errorhandler(500)
 @app.errorhandler(405)

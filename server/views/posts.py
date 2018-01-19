@@ -4,6 +4,7 @@ from app import app
 from flask import jsonify, request
 from models import Post, User
 from mongoengine.errors import ValidationError
+from views.authorization import login_required
 
 
 @app.route("/api/posts")
@@ -25,18 +26,21 @@ def posts_index():
 
 
 @app.route("/api/posts", methods=["POST"])
-def posts_create():
+@login_required
+def posts_create(username):
+    if not request.json:
+        return jsonify({"error": "Data not specified"}), 409
     if not request.json.get("title"):
         return jsonify({"error": "Title not specified"}), 409
     if not request.json.get("content"):
         return jsonify({"error": "Content not specified"}), 409
 
-    lucas = User.objects(username="Lucas").first()
+    user = User.objects(username=username).first()
 
     post = Post(
         title=request.json.get("title"),
         content=request.json.get("content"),
-        user=lucas,
+        user=user,
         comments=[]
     ).save()
 
