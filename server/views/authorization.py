@@ -83,7 +83,7 @@ def login():
     user = users.first()
 
     if not check_password_hash(user.password, request.json.get("password")):
-        return jsonify({"error": "Invalid password"}),
+        return jsonify({"error": "Invalid password"}), 401
 
     token = jwt.encode({
         "username": user.username,

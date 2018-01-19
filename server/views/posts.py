@@ -9,7 +9,7 @@ from views.authorization import login_required
 
 @app.route("/api/posts")
 def posts_index():
-    posts = Post.objects()
+    posts = Post.objects().order_by("-created")
     return jsonify([
         {
             "id": str(post.id),
@@ -84,7 +84,7 @@ def posts_user(username):
     except ValidationError:
         return jsonify({"error": "User not found"}), 404
 
-    posts = Post.objects(user=user)
+    posts = Post.objects(user=user).order_by("-created")
 
     return jsonify([
         {
