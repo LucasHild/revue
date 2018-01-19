@@ -7,6 +7,7 @@
       <li v-if="!$store.state.isUserLoggedIn" style="float:right"><router-link :to="{ name: 'Login', params: {} }">Login</router-link></li>
 
       <li v-if="$store.state.isUserLoggedIn" style="float:right"><a @click="logout()">Logout</a></li>
+      <li v-if="$store.state.isUserLoggedIn" style="float:right"><router-link :to="{ name: 'User', params: { username: $store.state.user.username } }">{{ $store.state.user.username }}</router-link></li>
     </ul>
   </nav>
 </template>
