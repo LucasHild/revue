@@ -19,7 +19,7 @@
         <router-link :to="{ name: 'User', params: { 'username': user.username } }">
           {{ user.username }}
         </router-link>
-         {{ created.date }}
+         on {{ created }}
       </h3>
 
       <p v-html="content"></p>
@@ -29,6 +29,13 @@
 
     <div class="container">
       <h2 v-show="comments == []" >Comments</h2>
+
+      <form id="comment-form" @submit.prevent="createComment">
+        <p class="error">{{ errorCreateComment }}</p>
+        <textarea v-model="newCommentContent" name="name" placeholder="Content" rows="5" cols="80"></textarea>
+        <input class="button" type="submit" value="Create comment">
+      </form>
+
       <Comment v-for="comment in comments" :key="comment.id" :user="comment.user" :created="comment.created" :content="comment.content"></Comment>
     </div>
   </div>
@@ -52,7 +59,10 @@ export default {
       created: '',
       content: '',
       comments: [],
-      deleteVerify: false
+      deleteVerify: false,
+
+      newCommentContent: '',
+      errorCreateComment: null
     }
   },
 
@@ -69,6 +79,18 @@ export default {
       } else {
         this.deleteVerify = true
       }
+    },
+
+    createComment() {
+      PostsService.addComment(this.id, this.newCommentContent)
+        .then(response => {
+          this.comments = response.data
+          this.newCommentContent = ''
+          this.errorCreateComment = null
+        })
+        .catch(e => {
+          this.errorCreateComment = e.response.data.error
+        })
     }
   },
 
@@ -128,5 +150,25 @@ export default {
   .post-id {
     text-align: right;
     display: block;
+  }
+
+  #comment-form {
+    max-width: 1500px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #comment-form textarea, #comment-form input {
+    display: block;
+    width: 100%;
+    margin: 0;
+    border: none;
+    background: rgb(223, 224, 221);
+    padding: 15px;
+    margin: 20px 0;
+
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
   }
 </style>

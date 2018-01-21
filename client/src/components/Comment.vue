@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="comment">
-    <h4>by <a href="">{{ user.username }}</a> on {{ created.date }} at {{ created.time }}</a></h4>
+    <h4>by <a href="">{{ user.username }}</a> on {{ created }}</a></h4>
     <p v-html="content"></p>
   </div>
 </template>

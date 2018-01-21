@@ -19,5 +19,9 @@ export default {
 
   user(username) {
     return Api().get('posts/user/' + username)
+  },
+
+  addComment(postId, commentContent) {
+    return Api().post('posts/' + postId + '/comments', { content: commentContent })
   }
 }

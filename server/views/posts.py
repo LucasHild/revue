@@ -2,7 +2,7 @@ import json
 
 from app import app
 from flask import jsonify, request
-from models import Post, User
+from models import Post, User, Comment
 from mongoengine.errors import ValidationError
 from views.authorization import login_required
 
@@ -19,7 +19,14 @@ def posts_index():
                 "id": str(post.user.id),
                 "username": post.user.username
             },
-            "comments": post.comments,
+            "comments": [{
+                "content": comment.content,
+                "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
+                "user": {
+                    "id": str(comment.user.id),
+                    "username": comment.user.username
+                }
+            } for comment in post.comments][::-1],
             "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
         } for post in posts
     ])
@@ -52,7 +59,14 @@ def posts_create(username):
             "id": str(post.user.id),
             "username": post.user.username
         },
-        "comments": post.comments,
+        "comments": [{
+            "content": comment.content,
+            "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
+            "user": {
+                "id": str(comment.user.id),
+                "username": comment.user.username
+            }
+        } for comment in post.comments][::-1],
         "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
     })
 
@@ -76,7 +90,14 @@ def posts_item(id):
             "id": str(post.user.id),
             "username": post.user.username
         },
-        "comments": post.comments,
+        "comments": [{
+            "content": comment.content,
+            "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
+            "user": {
+                "id": str(comment.user.id),
+                "username": comment.user.username
+            }
+        } for comment in post.comments][::-1],
         "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
     })
 
@@ -99,7 +120,14 @@ def posts_user(username):
                 "id": str(post.user.id),
                 "username": post.user.username
             },
-            "comments": post.comments,
+            "comments": [{
+                "content": comment.content,
+                "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
+                "user": {
+                    "id": str(comment.user.id),
+                    "username": comment.user.username
+                }
+            } for comment in post.comments][::-1],
             "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
         } for post in posts
     ])
@@ -129,10 +157,44 @@ def posts_delete(username, id):
             "id": str(post.user.id),
             "username": post.user.username
         },
-        "comments": post.comments,
+        "comments": [{
+            "content": comment.content,
+            "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
+            "user": {
+                "id": str(comment.user.id),
+                "username": comment.user.username
+            }
+        } for comment in post.comments][::-1],
         "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
     }
 
     post.delete()
 
     return jsonify(post_info)
+
+@app.route("/api/posts/<string:id>/comments", methods=["POST"])
+@login_required
+def posts_create_comment(username, id):
+    if not request.json.get('content'):
+        return jsonify({"error": "No content specified"}), 409
+    content = request.json.get('content')
+
+    try:
+        post = Post.objects(pk=id).first()
+    except ValidationError:
+        return jsonify({"error": "Post not found"}), 404
+
+    user = User.objects(username=username).first()
+    comments = post.comments
+    comments.append(Comment(user=user, content=content))
+    post.save()
+
+    return jsonify([{
+            "content": comment.content,
+            "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
+            "user": {
+                "id": str(comment.user.id),
+                "username": comment.user.username
+            }
+        } for comment in post.comments][::-1]
+    )
