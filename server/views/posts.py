@@ -1,4 +1,6 @@
-import json
+import config
+import os
+import uuid
 
 from app import app
 from flask import jsonify, request
@@ -35,20 +37,31 @@ def posts_index():
 @app.route("/api/posts", methods=["POST"])
 @login_required
 def posts_create(username):
-    if not request.json:
+    if not request.form:
         return jsonify({"error": "Data not specified"}), 409
-    if not request.json.get("title"):
+    if not request.form.get("title"):
         return jsonify({"error": "Title not specified"}), 409
-    if not request.json.get("content"):
+    if not request.form.get("content"):
         return jsonify({"error": "Content not specified"}), 409
 
     user = User.objects(username=username).first()
 
+    image = request.files.get("image")
+    if image:
+        if not image.filename.endswith(tuple([".jpg", ".png"])):
+            return jsonify({"error": "Image is not valid"}), 409
+
+        # Generate random filename
+        filename = str(uuid.uuid4()).replace("-", "") + "." + image.filename.split(".")[-1]
+        image.save(os.path.join(config.image_upload_folder, filename))
+
+
     post = Post(
-        title=request.json.get("title"),
-        content=request.json.get("content"),
+        title=request.form.get("title"),
+        content=request.form.get("content"),
         user=user,
-        comments=[]
+        comments=[],
+        image=filename
     ).save()
 
     return jsonify({
@@ -67,6 +80,7 @@ def posts_create(username):
                 "username": comment.user.username
             }
         } for comment in post.comments][::-1],
+        "image": post.image,
         "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
     })
 

@@ -25,5 +25,12 @@ def internal_server_error(e):
         "error": "Internal server error"
     }), 500
 
+
+@app.errorhandler(413)
+def request_entity_too_large(e):
+    return jsonify({
+        "error": "To large (max. 1 MB)"
+    }), 413
+
 if __name__ == "__main__":
     app.run(debug=True)

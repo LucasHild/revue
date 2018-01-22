@@ -5,6 +5,7 @@ from mongoengine import *
 
 connect("revue")
 
+
 class User(Document):
     email = EmailField(required=True, unique=True)
     username = StringField(max_length=50, required=True, unique=True)
@@ -24,3 +25,4 @@ class Post(Document):
     content = StringField(max_length=5000)
     comments = ListField(EmbeddedDocumentField(Comment))
     created = DateTimeField(required=True, default=datetime.datetime.now())
+    image = StringField()
