@@ -3,7 +3,7 @@
     <router-link :to="{name:'Post', params: {id: post.id}}" class="image-area">
       <div :style="'background-image: url(http://localhost:5000/api/file/' + post.image + ');'" class="image"></div>
     </router-link>
-    <Vote :upvotes="post.upvotes" :downvotes="post.downvotes" :postId="post.id"></Vote>
+    <Vote :upvotes="post.upvotes" :downvotes="post.downvotes" :postId="post.id" @error="(value) => {error = value}"></Vote>
     <router-link :to="{name:'Post', params: {id: post.id}}" class="body-area">
       <h3><slot></slot></h3>
       <p>{{ description }}</p>

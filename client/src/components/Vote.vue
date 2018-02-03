@@ -29,7 +29,7 @@ export default {
           this.downvotes = response.data.downvotes
         })
         .catch(e => {
-          this.error = e.response.data.error
+          this.$emit('error', e.response.data.error)
         })
     },
 
@@ -40,7 +40,7 @@ export default {
           this.downvotes = response.data.downvotes
         })
         .catch(e => {
-          this.error = e.response.data.error
+          this.$emit('error', e.response.data.error)
         })
     }
   },

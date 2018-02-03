@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="post">
     <div class="body container">
-      <Vote :upvotes="upvotes" :downvotes="downvotes" :postId="id"></Vote>
+      <Vote :upvotes="upvotes" :downvotes="downvotes" :postId="id" @error="(value) => {error = value}"></Vote>
       <div class="content">
         <svg id="delete-button" @click="deletePost" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
           <title>Delete Post</title>
