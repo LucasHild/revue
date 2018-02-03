@@ -1,7 +1,7 @@
 <template lang="html">
   <router-link :to="{name:'Post', params: {id: id}}" class="post-preview">
     <div class="image-area">
-      <div :style="'background-image: url(' + img + ');'" class="image"></div>
+      <div :style="'background-image: url(http://localhost:5000/api/file/' + image + ');'" class="image"></div>
     </div>
     <div class="body-area">
       <h3><slot></slot></h3>
@@ -17,7 +17,7 @@ export default {
   props: [
     'content',
     'link',
-    'img',
+    'image',
     'id'
   ],
 

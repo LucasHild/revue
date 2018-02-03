@@ -3,11 +3,11 @@
     <h1>Recenst Posts</h1>
     <PostPreview
       v-for="post in posts"
-      img="http://fillmurray.com/225/150"
       :content="post.content"
       :id="post.id"
       :key="post.id"
       :comments="post.comments"
+      :image="post.image"
       >
       {{ post.title }}
     </PostPreview>

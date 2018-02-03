@@ -12,26 +12,7 @@ from views.authorization import login_required
 @app.route("/api/posts")
 def posts_index():
     posts = Post.objects().order_by("-created")
-    return jsonify([
-        {
-            "id": str(post.id),
-            "title": post.title,
-            "content": post.content,
-            "user": {
-                "id": str(post.user.id),
-                "username": post.user.username
-            },
-            "comments": [{
-                "content": comment.content,
-                "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
-                "user": {
-                    "id": str(comment.user.id),
-                    "username": comment.user.username
-                }
-            } for comment in post.comments][::-1],
-            "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
-        } for post in posts
-    ])
+    return jsonify(posts.to_public_json())
 
 
 @app.route("/api/posts", methods=["POST"])
@@ -64,25 +45,7 @@ def posts_create(username):
         image=filename
     ).save()
 
-    return jsonify({
-        "id": str(post.id),
-        "title": post.title,
-        "content": post.content,
-        "user": {
-            "id": str(post.user.id),
-            "username": post.user.username
-        },
-        "comments": [{
-            "content": comment.content,
-            "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
-            "user": {
-                "id": str(comment.user.id),
-                "username": comment.user.username
-            }
-        } for comment in post.comments][::-1],
-        "image": post.image,
-        "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
-    })
+    return jsonify(post.to_public_json())
 
 
 @app.route("/api/posts/id/<string:id>")
@@ -96,24 +59,7 @@ def posts_item(id):
     except ValidationError:
         return jsonify({"error": "Post not found"}), 404
 
-    return jsonify({
-        "id": str(post.id),
-        "title": post.title,
-        "content": post.content,
-        "user": {
-            "id": str(post.user.id),
-            "username": post.user.username
-        },
-        "comments": [{
-            "content": comment.content,
-            "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
-            "user": {
-                "id": str(comment.user.id),
-                "username": comment.user.username
-            }
-        } for comment in post.comments][::-1],
-        "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
-    })
+    return jsonify(post.to_public_json())
 
 
 @app.route("/api/posts/user/<string:username>")
@@ -125,26 +71,7 @@ def posts_user(username):
 
     posts = Post.objects(user=user).order_by("-created")
 
-    return jsonify([
-        {
-            "id": str(post.id),
-            "title": post.title,
-            "content": post.content,
-            "user": {
-                "id": str(post.user.id),
-                "username": post.user.username
-            },
-            "comments": [{
-                "content": comment.content,
-                "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
-                "user": {
-                    "id": str(comment.user.id),
-                    "username": comment.user.username
-                }
-            } for comment in post.comments][::-1],
-            "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
-        } for post in posts
-    ])
+    return jsonify(posts.to_public_json())
 
 
 @app.route("/api/posts/id/<string:id>", methods=["DELETE"])
@@ -163,24 +90,7 @@ def posts_delete(username, id):
     if username != post.user.username:
         return jsonify({"error": "You are not the creator of the post"}), 401
 
-    post_info = {
-        "id": str(post.id),
-        "title": post.title,
-        "content": post.content,
-        "user": {
-            "id": str(post.user.id),
-            "username": post.user.username
-        },
-        "comments": [{
-            "content": comment.content,
-            "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
-            "user": {
-                "id": str(comment.user.id),
-                "username": comment.user.username
-            }
-        } for comment in post.comments][::-1],
-        "created": post.created.strftime("%Y-%m-%d %H:%M:%S")
-    }
+    post_info = post.to_public_json()
 
     post.delete()
 

@@ -10,7 +10,8 @@
       :content="post.content"
       :id="post.id"
       :key="post.id"
-      >
+      :image="post.image"
+    >
       {{ post.title }}
     </PostPreview>
 
