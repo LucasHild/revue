@@ -1,14 +1,7 @@
 <template lang="html">
   <div class="home container">
     <h1>Recenst Posts</h1>
-    <PostPreview
-      v-for="post in posts"
-      :content="post.content"
-      :id="post.id"
-      :key="post.id"
-      :comments="post.comments"
-      :image="post.image"
-      >
+    <PostPreview v-for="post in posts" :key="post.id" :post="post">
       {{ post.title }}
     </PostPreview>
 

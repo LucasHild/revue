@@ -31,6 +31,8 @@ class Post(Document):
     comments = ListField(EmbeddedDocumentField(Comment))
     created = DateTimeField(required=True, default=datetime.datetime.now())
     image = StringField()
+    upvotes = ListField(ReferenceField(User, reverse_delete_rule=CASCADE))
+    downvotes = ListField(ReferenceField(User, reverse_delete_rule=CASCADE))
 
     meta = {'queryset_class': CustomQuerySet}
 
@@ -52,7 +54,15 @@ class Post(Document):
                 }
             } for comment in self.comments][::-1],
             "created": self.created.strftime("%Y-%m-%d %H:%M:%S"),
-            "image": self.image
+            "image": self.image,
+            "upvotes": [{
+                "id": str(upvote.id),
+                "username": upvote.username
+            } for upvote in self.upvotes],
+            "downvotes": [{
+                "id": str(downvote.id),
+                "username": downvote.username
+            } for downvote in self.downvotes],
         }
 
         return data

@@ -122,3 +122,67 @@ def posts_create_comment(username, id):
             }
         } for comment in post.comments][::-1]
     )
+
+@app.route("/api/posts/<string:id>/upvote", methods=["POST"])
+@login_required
+def posts_upvote(username, id):
+    try:
+        post = Post.objects(pk=id).first()
+    except ValidationError:
+        return jsonify({"error": "Post not found"}), 404
+
+    user = User.objects(username=username).first()
+
+    upvotes = post.upvotes
+    downvotes = post.downvotes
+
+    if username in [u["username"] for u in upvotes]:
+        # User already upvotes
+        upvote_index = [d.username for d in upvotes].index(username)
+        upvotes.pop(upvote_index)
+    elif username in [u["username"] for u in downvotes]:
+        # User already downvoted
+        downvote_index = [d.username for d in downvotes].index(username)
+        downvotes.pop(downvote_index)
+        upvotes.append(user)
+    else:
+        upvotes.append(user)
+
+    post.save()
+
+    return jsonify({
+        "upvotes": post.to_public_json()["upvotes"],
+        "downvotes": post.to_public_json()["downvotes"]
+    })
+
+
+@app.route("/api/posts/<string:id>/downvote", methods=["POST"])
+@login_required
+def posts_downvote(username, id):
+    try:
+        post = Post.objects(pk=id).first()
+    except ValidationError:
+        return jsonify({"error": "Post not found"}), 404
+
+    user = User.objects(username=username).first()
+
+    upvotes = post.upvotes
+    downvotes = post.downvotes
+
+    if username in [u["username"] for u in downvotes]:
+        # User already upvotes
+        downvote_index = [d.username for d in downvotes].index(username)
+        downvotes.pop(downvote_index)
+    elif username in [u["username"] for u in upvotes]:
+        upvote_index = [d.username for d in upvotes].index(username)
+        upvotes.pop(upvote_index)
+        downvotes.append(user)
+    else:
+        downvotes.append(user)
+
+    post.save()
+
+    return jsonify({
+        "upvotes": post.to_public_json()["upvotes"],
+        "downvotes": post.to_public_json()["downvotes"]
+    })

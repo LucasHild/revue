@@ -1,30 +1,33 @@
 <template lang="html">
   <div class="post">
     <div class="body container">
-      <svg id="delete-button" @click="deletePost" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-        <title>Delete Post</title>
-        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-        <path d="M0 0h24v24H0z" fill="none"/>
-      </svg>
-      <svg id="verify-delete-button" v-show="deleteVerify" @click="deleteVerify = false" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-        <title>Cancel</title>
-        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        <path d="M0 0h24v24H0z" fill="none"/>
-      </svg>
+      <Vote :upvotes="upvotes" :downvotes="downvotes" :postId="id"></Vote>
+      <div class="content">
+        <svg id="delete-button" @click="deletePost" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <title>Delete Post</title>
+          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+          <path d="M0 0h24v24H0z" fill="none"/>
+        </svg>
+        <svg id="verify-delete-button" v-show="deleteVerify" @click="deleteVerify = false" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <title>Cancel</title>
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          <path d="M0 0h24v24H0z" fill="none"/>
+        </svg>
 
-      <p class="error">{{ error }}</p>
-      <h1>{{ title }}</h1>
+        <p class="error">{{ error }}</p>
+        <h1>{{ title }}</h1>
 
-      <h3>by
-        <router-link :to="{ name: 'User', params: { 'username': user.username } }">
-          {{ user.username }}
-        </router-link>
-         on {{ created }}
-      </h3>
+        <h3>by
+          <router-link :to="{ name: 'User', params: { 'username': user.username } }">
+            {{ user.username }}
+          </router-link>
+           on {{ created }}
+        </h3>
 
-      <p v-html="content"></p>
+        <p v-html="content"></p>
 
-      <i class="post-id">ID {{ id }}</i>
+        <i class="post-id">ID {{ id }}</i>
+      </div>
     </div>
 
     <div class="container">
@@ -43,12 +46,13 @@
 
 <script>
 import Comment from '@/components/Comment'
+import Vote from '@/components/Vote'
 import PostsService from '@/services/PostsService'
 
 export default {
   name: 'post',
 
-  components: { Comment },
+  components: { Comment, Vote },
 
   data() {
     return {
@@ -59,6 +63,8 @@ export default {
       created: '',
       content: '',
       comments: [],
+      upvotes: [],
+      downvotes: [],
       deleteVerify: false,
 
       newCommentContent: '',
@@ -102,6 +108,8 @@ export default {
         this.created = response.data.created
         this.content = response.data.content
         this.comments = response.data.comments
+        this.upvotes = response.data.upvotes
+        this.downvotes = response.data.downvotes
       })
       .catch(e => {
         this.error = e.response.data.error
@@ -114,6 +122,8 @@ export default {
   .body {
     background: #eeeeee;
     position: relative;
+    display: grid;
+    grid-template-columns: 1fr 20fr;
   }
 
   #delete-button {

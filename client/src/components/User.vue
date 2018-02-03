@@ -4,16 +4,11 @@
     <div class="len-posts button">{{ posts.length }} Posts</div>
     <div class="stars button">{{ stars }} Stars</div>
 
-    <PostPreview
-      v-for="post in posts"
-      img="http://fillmurray.com/225/150"
-      :content="post.content"
-      :id="post.id"
-      :key="post.id"
-      :image="post.image"
-    >
-      {{ post.title }}
-    </PostPreview>
+    <div class="post-list">
+      <PostPreview v-for="post in posts" :key="post.id" :post="post">
+        {{ post.title }}
+      </PostPreview>
+    </div>
 
     <CreateButton></CreateButton>
   </div>

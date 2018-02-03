@@ -1,29 +1,29 @@
 <template lang="html">
-  <router-link :to="{name:'Post', params: {id: id}}" class="post-preview">
-    <div class="image-area">
-      <div :style="'background-image: url(http://localhost:5000/api/file/' + image + ');'" class="image"></div>
-    </div>
-    <div class="body-area">
+  <div class="post-preview">
+    <router-link :to="{name:'Post', params: {id: post.id}}" class="image-area">
+      <div :style="'background-image: url(http://localhost:5000/api/file/' + post.image + ');'" class="image"></div>
+    </router-link>
+    <Vote :upvotes="post.upvotes" :downvotes="post.downvotes" :postId="post.id"></Vote>
+    <router-link :to="{name:'Post', params: {id: post.id}}" class="body-area">
       <h3><slot></slot></h3>
       <p>{{ description }}</p>
-    </div>
-  </router-link>
+    </router-link>
+  </div>
 </template>
 
 <script>
+import Vote from '@/components/Vote'
+
 export default {
   name: 'post-preview',
 
-  props: [
-    'content',
-    'link',
-    'image',
-    'id'
-  ],
+  props: ['post'],
+
+  components: { Vote },
 
   computed: {
     description() {
-      return this.content.slice(0, 750) + '...'
+      return this.post.content.slice(0, 750) + '...'
     }
   }
 }
@@ -35,11 +35,8 @@ export default {
   margin-bottom: 25px;
   display: block;
   color: black;
-}
-
-.image-area {
-  width: 15%;
-  float: left;
+  display: grid;
+  grid-template-columns: 3fr 1fr 15fr;
 }
 
 .image {
@@ -51,8 +48,6 @@ export default {
 }
 
 .body-area {
-  width: 85%;
-  float: right;
-  padding-left: 20px;
+  color: black;
 }
 </style>

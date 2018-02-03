@@ -23,5 +23,13 @@ export default {
 
   addComment(postId, commentContent) {
     return Api().post('posts/' + postId + '/comments', { content: commentContent })
+  },
+
+  upVote(postId) {
+    return Api().post('posts/' + postId + '/upvote')
+  },
+
+  downVote(postId) {
+    return Api().post('posts/' + postId + '/downvote')
   }
 }
