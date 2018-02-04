@@ -54,7 +54,7 @@ export default {
         .then(response => {
           this.$router.push({
             name: 'Post',
-            params: { id: response.data.id }
+            params: { id: response.data.id, subvuePermalink: response.data.subvue.permalink }
           })
         })
         .catch(e => {
