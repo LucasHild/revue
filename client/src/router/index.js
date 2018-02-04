@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Login from '@/components/Login'
 import SignUp from '@/components/SignUp'
+import Subvue from '@/components/Subvue'
 import Post from '@/components/Post'
 import User from '@/components/User'
 import CreatePost from '@/components/CreatePost'
@@ -28,6 +29,11 @@ export default new Router({
       path: '/signup',
       name: 'SignUp',
       component: SignUp
+    },
+    {
+      path: '/s/:name',
+      name: 'Subvue',
+      component: Subvue
     },
     {
       path: '/post/:id',

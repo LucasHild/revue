@@ -4,6 +4,16 @@ from models import Subvue, User
 from views.authorization import login_required
 
 
+@app.route("/api/subvues/<string:permalink>")
+def subvue_item(permalink):
+    subvue = Subvue.objects(permalink__iexact=permalink).first()
+
+    if not subvue:
+        return jsonify({"error": "Subvue not found"})
+
+    return jsonify(subvue.to_public_json())
+
+
 @app.route("/api/subvues", methods=["POST"])
 @login_required
 def subvues_create(username):

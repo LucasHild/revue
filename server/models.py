@@ -78,7 +78,6 @@ class Subvue(Document):
     meta = {'queryset_class': CustomQuerySet}
 
     def to_public_json(self):
-        print(self.moderators)
         data = {
             "id": str(self.id),
             "name": self.name,
