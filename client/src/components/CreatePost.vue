@@ -4,6 +4,7 @@
     <form @submit.prevent="create" enctype="multipart/form-data">
       <p class="error">{{ error }}</p>
       <input v-model="title" type="text" placeholder="Title" ref="title">
+      <input v-model="subvue" type="text" placeholder="Subvue">
       <div v-if="imagePreview" id="image-preview" :style="'background-image: url(' + imagePreview + ')'"></div>
       <div id="image-upload">
         <p>
@@ -29,6 +30,7 @@ export default {
   data() {
     return {
       title: '',
+      subvue: '',
       content: '',
       error: null,
       image: null,
@@ -40,6 +42,7 @@ export default {
     create() {
       var formData = new FormData();
       formData.append('title', this.title)
+      formData.append('subvue', this.subvue)
       formData.append('content', this.content)
 
       // If photo has been set

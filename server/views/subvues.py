@@ -9,7 +9,7 @@ def subvue_item(permalink):
     subvue = Subvue.objects(permalink__iexact=permalink).first()
 
     if not subvue:
-        return jsonify({"error": "Subvue not found"})
+        return jsonify({"error": "Subvue not found"}), 404
 
     return jsonify(subvue.to_public_json())
 

@@ -4,7 +4,7 @@ import uuid
 
 from app import app
 from flask import jsonify, request
-from models import Post, User, Comment
+from models import Post, User, Comment, Subvue
 from mongoengine.errors import ValidationError
 from views.authorization import login_required
 
@@ -22,8 +22,14 @@ def posts_create(username):
         return jsonify({"error": "Data not specified"}), 409
     if not request.form.get("title"):
         return jsonify({"error": "Title not specified"}), 409
+    if not request.form.get("subvue"):
+        return jsonify({"error": "Subvue not specified"}), 409
     if not request.form.get("content"):
         return jsonify({"error": "Content not specified"}), 409
+
+    subvue = Subvue.objects(permalink__iexact=request.form.get("subvue")).first()
+    if not subvue:
+        return jsonify({"error": "Subvue " + request.form.get("subvue") + " not found"}), 409
 
     user = User.objects(username=username).first()
 
@@ -35,10 +41,13 @@ def posts_create(username):
         # Generate random filename
         filename = str(uuid.uuid4()).replace("-", "") + "." + image.filename.split(".")[-1]
         image.save(os.path.join(config.image_upload_folder, filename))
+    else:
+        filename = None
 
 
     post = Post(
         title=request.form.get("title"),
+        subvue=subvue,
         content=request.form.get("content"),
         user=user,
         comments=[],
