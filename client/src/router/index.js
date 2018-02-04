@@ -6,6 +6,7 @@ import SignUp from '@/components/SignUp'
 import Post from '@/components/Post'
 import User from '@/components/User'
 import CreatePost from '@/components/CreatePost'
+import CreateSubvue from '@/components/CreateSubvue'
 
 Vue.use(Router)
 
@@ -42,6 +43,11 @@ export default new Router({
       path: '/create',
       name: 'CreatePost',
       component: CreatePost
+    },
+    {
+      path: '/create/subvue',
+      name: 'CreateSubvue',
+      component: CreateSubvue
     }
   ]
 })

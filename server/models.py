@@ -66,3 +66,27 @@ class Post(Document):
         }
 
         return data
+
+
+class Subvue(Document):
+    name = StringField(max_length=120, required=True)
+    permalink = StringField(max_length=120, required=True)
+    description = StringField(max_length=500, required=True)
+    created = DateTimeField(required=True, default=datetime.datetime.now())
+    moderators = ListField(ReferenceField(User))
+
+    meta = {'queryset_class': CustomQuerySet}
+
+    def to_public_json(self):
+        print(self.moderators)
+        data = {
+            "id": str(self.id),
+            "name": self.name,
+            "description": self.description,
+            "moderators": [{
+                "id": str(moderator.id),
+                "username": moderator.username
+            } for moderator in self.moderators],
+        }
+
+        return data
