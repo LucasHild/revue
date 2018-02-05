@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import SubvueService from '@/services/SubvueService'
+import SubvuesService from '@/services/SubvuesService'
 
 export default {
   name: 'subvue-info',
@@ -30,7 +30,7 @@ export default {
 
   methods: {
     fetchData() {
-      SubvueService.item(this.permalink)
+      SubvuesService.item(this.permalink)
         .then(response => {
           this.name = response.data.name
           this.description = response.data.description

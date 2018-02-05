@@ -1,17 +1,28 @@
 from app import app
 from flask import jsonify, request
-from models import Subvue, User
+from models import Subvue, User, Post
 from views.authorization import login_required
 
 
 @app.route("/api/subvues/<string:permalink>")
-def subvue_item(permalink):
+def subvues_item(permalink):
     subvue = Subvue.objects(permalink__iexact=permalink).first()
 
     if not subvue:
         return jsonify({"error": "Subvue not found"}), 404
 
     return jsonify(subvue.to_public_json())
+
+
+@app.route("/api/subvues/<string:permalink>/posts")
+def subvues_posts(permalink):
+    subvue = Subvue.objects(permalink__iexact=permalink).first()
+
+    if not subvue:
+        return jsonify({"error": "Subvue not found"}), 404
+
+    posts = Post.objects(subvue=subvue)
+    return jsonify(posts.to_public_json())
 
 
 @app.route("/api/subvues", methods=["POST"])

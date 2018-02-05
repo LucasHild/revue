@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import SubvueService from '@/services/SubvueService'
+import SubvuesService from '@/services/SubvuesService'
 
 export default {
   name: 'create-post',
@@ -44,7 +44,7 @@ export default {
 
   methods: {
     create() {
-      SubvueService.create({
+      SubvuesService.create({
         name: this.name,
         description: this.description,
         moderators: this.moderators

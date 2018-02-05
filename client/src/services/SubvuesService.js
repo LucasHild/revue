@@ -7,5 +7,9 @@ export default {
 
   create(post) {
     return Api().post('subvues', post)
+  },
+
+  posts(permalink) {
+    return Api().get('subvues/' + permalink + '/posts')
   }
 }
