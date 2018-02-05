@@ -36,7 +36,7 @@ export default new Router({
       component: Subvue
     },
     {
-      path: '/:subvuePermalink/:id',
+      path: '/s/:subvuePermalink/:id',
       name: 'Post',
       component: Post
     },

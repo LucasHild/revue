@@ -49,7 +49,7 @@ class Subvue(Document):
 
 class Post(Document):
     title = StringField(max_length=120, required=True)
-    subvue = ReferenceField(Subvue, required=True, default=Subvue.objects(permalink="default").first(), reverse_delete_rule=CASCADE)
+    subvue = ReferenceField(Subvue, required=True, reverse_delete_rule=CASCADE)
     user = ReferenceField(User, reverse_delete_rule=CASCADE)
     content = StringField(max_length=5000)
     comments = ListField(EmbeddedDocumentField(Comment))

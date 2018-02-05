@@ -18,6 +18,12 @@ export default {
     return {
       permalink: this.$route.params.name
     }
+  },
+
+  watch: {
+    $route() {
+      this.permalink = this.$route.params.name
+    }
   }
 }
 </script>

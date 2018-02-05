@@ -28,16 +28,28 @@ export default {
     }
   },
 
+  methods: {
+    fetchData() {
+      SubvueService.item(this.permalink)
+        .then(response => {
+          this.name = response.data.name
+          this.description = response.data.description
+          this.moderators = response.data.moderators
+        })
+        .catch(e => {
+          console.log(e);
+        })
+    }
+  },
+
   mounted() {
-    SubvueService.item(this.permalink)
-      .then(response => {
-        this.name = response.data.name
-        this.description = response.data.description
-        this.moderators = response.data.moderators
-      })
-      .catch(e => {
-        console.log(e);
-      })
+    this.fetchData()
+  },
+
+  watch: {
+    permalink() {
+      this.fetchData()
+    }
   }
 }
 </script>
