@@ -15,7 +15,27 @@ class User(Document):
     email = EmailField(required=True, unique=True)
     username = StringField(max_length=50, required=True, unique=True)
     password = StringField(required=True)
+    subscribed = ListField(ReferenceField("Subvue"))
     created = DateTimeField(required=True, default=datetime.datetime.now())
+
+    def to_public_json(self):
+        data = {
+            "id": str(self.id),
+            "username": self.username,
+            "subscribed": [{
+                "id": str(subvue.id),
+                "name": subvue.name,
+                "permalink": subvue.permalink,
+                "description": subvue.description,
+                "moderators": [{
+                    "id": str(moderator.id),
+                    "username": moderator.username
+                } for moderator in subvue.moderators],
+            } for subvue in self.subscribed],
+            "created": self.created.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+        return data
 
 
 class Comment(EmbeddedDocument):
@@ -37,6 +57,7 @@ class Subvue(Document):
         data = {
             "id": str(self.id),
             "name": self.name,
+            "permalink": self.permalink,
             "description": self.description,
             "moderators": [{
                 "id": str(moderator.id),

@@ -11,5 +11,13 @@ export default {
 
   posts(permalink) {
     return Api().get('subvues/' + permalink + '/posts')
+  },
+
+  subscribe(permalink) {
+    return Api().post('subvues/' + permalink + '/subscribe')
+  },
+
+  unsubscribe(permalink) {
+    return Api().post('subvues/' + permalink + '/unsubscribe')
   }
 }

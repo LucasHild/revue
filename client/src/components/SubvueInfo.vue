@@ -1,11 +1,14 @@
 <template lang="html">
   <div class="subvue-info">
-    <h2>{{ name }}</h2>
-    <p>{{ description }}</p>
+    <router-link class="heading" :to="{ name: 'Subvue', params: {name: subvue.permalink} }"><h2>{{ subvue.name }}</h2></router-link>
+    <p>{{ subvue.description }}</p>
+
+    <button @click="subscribe" v-if="!subscribed" class="subscribe-button">Subscribe</button>
+    <button @click="unsubscribe" v-if="subscribed" class="subscribe-button">Unsubscibe</button>
 
     <p><strong>Moderators</strong></p>
     <ul>
-      <li v-for="moderator in moderators" :key="moderator.username">
+      <li v-for="moderator in subvue.moderators" :key="moderator.username">
         <router-link :to="{ name: 'User', params: {username: moderator.username} }">{{ moderator.username }}</router-link>
       </li>
     </ul>
@@ -14,27 +17,61 @@
 
 <script>
 import SubvuesService from '@/services/SubvuesService'
+import UsersService from '@/services/UsersService'
 
 export default {
   name: 'subvue-info',
 
-  props: ['permalink'],
+  props: ['subvue'],
 
   data() {
     return {
-      name: '',
-      description: '',
-      moderators: []
+      subscribed: false
     }
   },
 
   methods: {
-    fetchData() {
-      SubvuesService.item(this.permalink)
+    subscribe() {
+      if (!this.$store.state.isUserLoggedIn) {
+        this.$router.push({ name: 'Login' });
+        return false
+      }
+
+      SubvuesService.subscribe(this.subvue.permalink)
         .then(response => {
-          this.name = response.data.name
-          this.description = response.data.description
-          this.moderators = response.data.moderators
+          this.checkSubscribed();
+        })
+        .catch(e => {
+          console.log(e);
+        })
+    },
+
+    unsubscribe() {
+      if (!this.$store.state.isUserLoggedIn) {
+        this.$router.push({ name: 'Login' });
+        return false
+      }
+
+      SubvuesService.unsubscribe(this.subvue.permalink)
+        .then(response => {
+          this.checkSubscribed();
+        })
+        .catch(e => {
+          console.log(e);
+        })
+    },
+
+    checkSubscribed() {
+      if (!this.$store.state.isUserLoggedIn) {
+        return false
+      }
+
+      UsersService.username(this.$store.state.user.username)
+        .then(response => {
+          var filteredSubscribedSubvues = response.data.subscribed.filter(s => {
+            return s.permalink == this.subvue.permalink
+          });
+          this.subscribed = filteredSubscribedSubvues.length > 0
         })
         .catch(e => {
           console.log(e);
@@ -43,20 +80,40 @@ export default {
   },
 
   mounted() {
-    this.fetchData()
+    this.checkSubscribed()
   },
 
   watch: {
-    permalink() {
-      this.fetchData()
+    subvue() {
+      this.checkSubscribed()
     }
   }
 }
 </script>
 
 <style lang="css">
+.heading {
+  color: black;
+}
+
+.heading:hover {
+  color: rgb(48, 99, 219);
+}
+
 .subvue-info {
   padding: 10px;
+}
+
+.subscribe-button {
+  background-color: rgb(23, 92, 93);
+  color: white;
+  border: 0;
+  padding: 10px 25px;
+  cursor: pointer;
+}
+
+.subscribe-button:hover {
+  background-color: rgb(19, 112, 113);
 }
 
 .moderator {

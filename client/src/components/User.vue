@@ -5,7 +5,7 @@
     <div class="stars button">{{ stars }} Stars</div>
 
     <div class="post-list">
-      <PostPreview v-for="post in posts" :key="post.id" :post="post">
+      <PostPreview hideUser="true" v-for="post in posts" :key="post.id" :post="post">
         {{ post.title }}
       </PostPreview>
     </div>

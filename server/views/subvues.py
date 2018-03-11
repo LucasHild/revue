@@ -64,3 +64,36 @@ def subvues_create(username):
     ).save()
 
     return jsonify(subvue.to_public_json())
+
+
+@app.route("/api/subvues/<string:permalink>/subscribe", methods=["POST"])
+@login_required
+def subvues_subscribe(username, permalink):
+    user = User.objects(username=username).first()
+    subvue = Subvue.objects(permalink__iexact=permalink).first()
+
+    if subvue not in user.subscribed:
+        user.subscribed.append(subvue)
+
+    user.save()
+
+    return jsonify({
+        "subscribed": [subvue.to_public_json() for subvue in user.subscribed]
+    })
+
+
+@app.route("/api/subvues/<string:permalink>/unsubscribe", methods=["POST"])
+@login_required
+def subvues_unsubscribe(username, permalink):
+    user = User.objects(username=username).first()
+    subvue = Subvue.objects(permalink__iexact=permalink).first()
+
+    if subvue in user.subscribed:
+        subscribed_index = user.subscribed.index(subvue)
+        user.subscribed.pop(subscribed_index)
+
+    user.save()
+
+    return jsonify({
+        "subscribed": [subvue.to_public_json() for subvue in user.subscribed]
+    })

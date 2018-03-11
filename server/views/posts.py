@@ -29,7 +29,7 @@ def posts_create(username):
 
     subvue = Subvue.objects(permalink__iexact=request.form.get("subvue")).first()
     if not subvue:
-        return jsonify({"error": "Subvue " + request.form.get("subvue") + " not found"}), 409
+        return jsonify({"error": "Subvue " + request.form.get("subvue") + " not found"}), 404
 
     user = User.objects(username=username).first()
 
@@ -43,7 +43,6 @@ def posts_create(username):
         image.save(os.path.join(config.image_upload_folder, filename))
     else:
         filename = None
-
 
     post = Post(
         title=request.form.get("title"),
@@ -105,6 +104,7 @@ def posts_delete(username, id):
 
     return jsonify(post_info)
 
+
 @app.route("/api/posts/<string:id>/comments", methods=["POST"])
 @login_required
 def posts_create_comment(username, id):
@@ -123,14 +123,15 @@ def posts_create_comment(username, id):
     post.save()
 
     return jsonify([{
-            "content": comment.content,
-            "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
-            "user": {
-                "id": str(comment.user.id),
-                "username": comment.user.username
-            }
-        } for comment in post.comments][::-1]
+        "content": comment.content,
+        "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
+        "user": {
+            "id": str(comment.user.id),
+            "username": comment.user.username
+        }
+    } for comment in post.comments][::-1]
     )
+
 
 @app.route("/api/posts/<string:id>/upvote", methods=["POST"])
 @login_required

@@ -2,13 +2,16 @@
   <div class="subvue">
     <div class="container">
       <h1>Recenst Posts</h1>
-      <PostPreview v-for="post in posts" :key="post.id" :post="post">
+      <PostPreview :hideSubvue="true" v-for="post in posts" :key="post.id" :post="post">
         {{ post.title }}
       </PostPreview>
 
       <CreateButton></CreateButton>
     </div>
-    <SubvueInfo class="subvue-info" :permalink="permalink"></SubvueInfo>
+    
+    <SubvueInfo class="subvue-info" v-if="subvue" :subvue="subvue"></SubvueInfo>
+    <!-- Only show it if data was fetched -->
+    <div v-else=""></div>
   </div>
 
 </template>
@@ -27,7 +30,8 @@ export default {
   data() {
     return {
       permalink: this.$route.params.name,
-      posts: []
+      posts: [],
+      subvue: null
     }
   },
 
@@ -37,6 +41,13 @@ export default {
 
   methods: {
     fetchData() {
+      SubvuesService.item(this.permalink)
+        .then(response => {
+          this.subvue = response.data
+        })
+        .catch(e => {
+          console.log(e);
+        })
       SubvuesService.posts(this.permalink)
         .then(response => {
           this.posts = response.data

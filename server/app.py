@@ -16,6 +16,7 @@ def images_get(filename):
 from views.authorization import *
 from views.posts import *
 from views.subvues import *
+from views.users import *
 
 
 @app.errorhandler(404)

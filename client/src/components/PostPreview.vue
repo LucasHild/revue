@@ -6,6 +6,12 @@
     <Vote :upvotes="post.upvotes" :downvotes="post.downvotes" :postId="post.id" @error="(value) => {error = value}"></Vote>
     <router-link :to="{name:'Post', params: {subvuePermalink: post.subvue.permalink, id: post.id}}" class="body-area">
       <h3><slot></slot></h3>
+      <p>
+
+        <span>on {{ post.created }}</span>
+        <span v-show="!hideUser">by <span class="blue-highlight">u/{{ post.user.username }}</span></span>
+        <span v-show="!hideSubvue">in <span class="blue-highlight">s/{{ post.subvue.name }}</span></span>
+        </p>
       <p>{{ description }}</p>
     </router-link>
   </div>
@@ -17,7 +23,15 @@ import Vote from '@/components/Vote'
 export default {
   name: 'post-preview',
 
-  props: ['post'],
+  props: {
+    post: {},
+    hideUser: {
+      default: false
+    },
+    hideSubvue: {
+      default: false
+    }
+  },
 
   components: { Vote },
 
@@ -30,6 +44,10 @@ export default {
 </script>
 
 <style scoped lang="css">
+p {
+  margin: 5px 0;
+}
+
 .post-preview {
   height: 150px;
   margin-bottom: 25px;
@@ -49,5 +67,9 @@ export default {
 
 .body-area {
   color: black;
+}
+
+.blue-highlight {
+  color: rgb(48, 99, 219);
 }
 </style>

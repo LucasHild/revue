@@ -1,58 +1,69 @@
 <template lang="html">
   <div class="post">
-    <div class="body container">
-      <Vote :upvotes="upvotes" :downvotes="downvotes" :postId="id" @error="(value) => {error = value}"></Vote>
-      <div class="content">
-        <svg id="delete-button" @click="deletePost" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-          <title>Delete Post</title>
-          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-          <path d="M0 0h24v24H0z" fill="none"/>
-        </svg>
-        <svg id="verify-delete-button" v-show="deleteVerify" @click="deleteVerify = false" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-          <title>Cancel</title>
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-          <path d="M0 0h24v24H0z" fill="none"/>
-        </svg>
+    <div class="main-container">
+      <div class="body container">
+        <Vote :upvotes="upvotes" :downvotes="downvotes" :postId="id" @error="(value) => {error = value}"></Vote>
+        <div class="content">
+          <svg id="delete-button" @click="deletePost" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <title>Delete Post</title>
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+            <path d="M0 0h24v24H0z" fill="none"/>
+          </svg>
+          <svg id="verify-delete-button" v-show="deleteVerify" @click="deleteVerify = false" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <title>Cancel</title>
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            <path d="M0 0h24v24H0z" fill="none"/>
+          </svg>
 
-        <p class="error">{{ error }}</p>
-        <h1>{{ title }}</h1>
+          <p class="error">{{ error }}</p>
+          <h1>{{ title }}</h1>
 
-        <h3>by
-          <router-link :to="{ name: 'User', params: { 'username': user.username } }">
-            {{ user.username }}
-          </router-link>
-           on {{ created }}
-        </h3>
+          <h3>by
+            <router-link :to="{ name: 'User', params: { 'username': user.username } }">
+              {{ user.username }}
+            </router-link>
+             on {{ created }}
+          </h3>
 
-        <p v-html="content"></p>
+          <p v-html="content"></p>
 
-        <i class="post-id">ID {{ id }}</i>
+          <i class="post-id">ID {{ id }}</i>
+        </div>
+      </div>
+
+      <div class="container">
+        <h2 v-show="comments == []" >Comments</h2>
+
+        <form id="comment-form" @submit.prevent="createComment">
+          <p class="error">{{ errorCreateComment }}</p>
+          <textarea v-model="newCommentContent" name="name" placeholder="Content" rows="5" cols="80"></textarea>
+          <input class="button" type="submit" value="Create comment">
+        </form>
+
+        <Comment v-for="comment in comments" :key="comment.id" :user="comment.user" :created="comment.created" :content="comment.content"></Comment>
       </div>
     </div>
 
-    <div class="container">
-      <h2 v-show="comments == []" >Comments</h2>
+    <SubvueInfo class="subvue-info" v-if="subvue" :subvue="subvue"></SubvueInfo>
+    <!-- Only show it if data was fetched -->
+    <div v-else=""></div>
 
-      <form id="comment-form" @submit.prevent="createComment">
-        <p class="error">{{ errorCreateComment }}</p>
-        <textarea v-model="newCommentContent" name="name" placeholder="Content" rows="5" cols="80"></textarea>
-        <input class="button" type="submit" value="Create comment">
-      </form>
-
-      <Comment v-for="comment in comments" :key="comment.id" :user="comment.user" :created="comment.created" :content="comment.content"></Comment>
-    </div>
+    <CreateButton></CreateButton>
   </div>
 </template>
 
 <script>
 import Comment from '@/components/Comment'
+import SubvueInfo from '@/components/SubvueInfo'
+import CreateButton from '@/components/CreateButton'
+
 import Vote from '@/components/Vote'
 import PostsService from '@/services/PostsService'
 
 export default {
   name: 'post',
 
-  components: { Comment, Vote },
+  components: { Comment, Vote, SubvueInfo, CreateButton },
 
   data() {
     return {
@@ -60,6 +71,7 @@ export default {
       id: this.$route.params.id,
       title: '',
       user: '',
+      subvue: null,
       created: '',
       content: '',
       comments: [],
@@ -110,6 +122,7 @@ export default {
         this.comments = response.data.comments
         this.upvotes = response.data.upvotes
         this.downvotes = response.data.downvotes
+        this.subvue = response.data.subvue
       })
       .catch(e => {
         this.error = e.response.data.error
@@ -119,6 +132,16 @@ export default {
 </script>
 
 <style scoped lang="css">
+.main-container {
+  width: 80%;
+  float: left;
+}
+
+.subvue-info {
+  width: 20%;
+  float: right;
+}
+
   .body {
     background: #eeeeee;
     position: relative;
