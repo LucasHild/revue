@@ -6,6 +6,7 @@
       <div class="dropdown-content">
         <router-link
           v-for="subvue in $store.state.subscribedSubvues"
+          :key="subvue.permalink"
           :to="{ name: 'Subvue', params: {name: subvue.permalink} }"
           >{{ subvue.name }}</router-link>
         <router-link class="create-subvue" :to="{ name: 'CreateSubvue' }">Create a Subvue</router-link>
