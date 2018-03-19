@@ -4,8 +4,10 @@
     <div class="dropdown">
       <button class="dropbtn">Subvues</button>
       <div class="dropdown-content">
-        <router-link :to="{ name: 'Subvue', params: {name: 'default'} }">Default</router-link>
-        <router-link :to="{ name: 'Subvue', params: {name: 'vuejs'} }">Vue.js</router-link>
+        <router-link
+          v-for="subvue in $store.state.subscribedSubvues"
+          :to="{ name: 'Subvue', params: {name: subvue.permalink} }"
+          >{{ subvue.name }}</router-link>
         <router-link class="create-subvue" :to="{ name: 'CreateSubvue' }">Create a Subvue</router-link>
       </div>
     </div>

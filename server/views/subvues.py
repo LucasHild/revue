@@ -74,6 +74,8 @@ def subvues_subscribe(username, permalink):
 
     if subvue not in user.subscribed:
         user.subscribed.append(subvue)
+        # Sort subvues by permalink
+        user.subscribed = sorted(user.subscribed, key=lambda k: k["permalink"])
 
     user.save()
 

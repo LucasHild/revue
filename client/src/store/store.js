@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
+import UsersService from '@/services/UsersService'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -12,7 +14,8 @@ export default new Vuex.Store({
   state: {
     token: null,
     user: null,
-    isUserLoggedIn: false
+    isUserLoggedIn: false,
+    subscribedSubvues: []
   },
 
   mutations: {
@@ -26,6 +29,9 @@ export default new Vuex.Store({
     },
     setUser(state, user) {
       state.user = user
+    },
+    setSubscribedSubvues(state, subvues) {
+      state.subscribedSubvues = subvues
     }
   },
 
@@ -35,6 +41,22 @@ export default new Vuex.Store({
     },
     setUser ({commit}, user) {
       commit('setUser', user)
+    },
+    updateSubscribedSubvues({commit, state}, subscribedOptional) {
+      if (state.isUserLoggedIn) {
+        if (subscribedOptional) {
+          // If data was provided
+          commit('setSubscribedSubvues', subscribedOptional)
+        } else {
+          UsersService.username(state.user.username)
+            .then(response => {
+              commit('setSubscribedSubvues', response.data.subscribed)
+            })
+            .catch(e => {
+              console.error(e)
+            })
+        }
+      }
     }
   }
 })

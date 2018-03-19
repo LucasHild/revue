@@ -39,6 +39,10 @@ export default {
 
       SubvuesService.subscribe(this.subvue.permalink)
         .then(response => {
+          // Save data in store for navbar
+          this.$store.dispatch('updateSubscribedSubvues', response.data.subscribed)
+
+          // Check button
           this.checkSubscribed();
         })
         .catch(e => {
@@ -54,6 +58,10 @@ export default {
 
       SubvuesService.unsubscribe(this.subvue.permalink)
         .then(response => {
+          // Save data in store for navbar
+          this.$store.dispatch('updateSubscribedSubvues', response.data.subscribed)
+
+          // Check button
           this.checkSubscribed();
         })
         .catch(e => {

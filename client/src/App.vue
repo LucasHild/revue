@@ -10,10 +10,15 @@
 
 <script>
 import NavBar from '@/components/NavBar'
+import UsersService from '@/services/UsersService'
 
 export default {
   name: 'app',
-  components: {NavBar}
+  components: {NavBar},
+
+  created() {
+    this.$store.dispatch('updateSubscribedSubvues')
+  }
 }
 </script>
 

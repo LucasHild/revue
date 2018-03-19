@@ -30,7 +30,7 @@ export default {
   computed: {
     permalink() {
       if (this.name) {
-        return 'https://#/s/' + this.name.toLowerCase()
+        return location.protocol + '//' + location.hostname + (location.port ? ':' + location.port: '') + '/#/s/' + this.name.toLowerCase()
           .replace(new RegExp(' ', 'g'), '-')
           .replace(new RegExp('\\.', 'g'), '')
           .replace(new RegExp(',', 'g'), '')
@@ -50,7 +50,11 @@ export default {
         moderators: this.moderators
       })
         .then(response => {
-
+          console.log(response.data);
+          this.$router.push({
+            name: 'Subvue',
+            params: { name: response.data.permalink }
+          })
         })
         .catch(e => {
           this.error= e.response.data.error
