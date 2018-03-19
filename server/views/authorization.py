@@ -5,6 +5,7 @@ from functools import wraps
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -24,7 +25,9 @@ def login_required(f):
             return jsonify({"error": "you are not logged in"}), 401
     return wrap
 
+
 from app import app
+
 
 @app.route("/api/signup", methods=["POST"])
 def sign_up():
