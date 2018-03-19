@@ -1,4 +1,5 @@
 import datetime
+import hashlib
 
 from mongoengine import *
 
@@ -22,6 +23,7 @@ class User(Document):
         data = {
             "id": str(self.id),
             "username": self.username,
+            "hashedEmail": hashlib.md5(self.email.encode("utf-8")).hexdigest(),
             "subscribed": [{
                 "id": str(subvue.id),
                 "name": subvue.name,
