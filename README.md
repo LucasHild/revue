@@ -23,6 +23,16 @@ cd ../server
 pip3 install -r requirements.txt
 ```
 
+```bash
+nano config.py
+```
+
+```python
+flask_secret_key = "CHANGEME"
+
+image_upload_folder = ".../revue/server/images"
+```
+
 ## Usage
 
 ```bash
