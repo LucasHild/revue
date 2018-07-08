@@ -11,25 +11,24 @@ git clone https://github.com/Lanseuo/revue.git
 cd revue
 ```
 
+install dependencies for client
 ```bash
-# install dependencies for client
 cd client
 npm install
 ```
 
+install dependencies for server
 ```bash
-# install requirements for server
 cd ../server
 pip3 install -r requirements.txt
 ```
 
+add config file
 ```bash
 nano config.py
 ```
-
 ```python
 flask_secret_key = "CHANGEME"
-
 image_upload_folder = ".../revue/server/images"
 ```
 
