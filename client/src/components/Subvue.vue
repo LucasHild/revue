@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="subvue">
     <div class="container">
-      <h1>Recenst Posts</h1>
+      <h1>Recent Posts</h1>
       <PostPreview :hideSubvue="true" v-for="post in posts" :key="post.id" :post="post">
         {{ post.title }}
       </PostPreview>
