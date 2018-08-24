@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="home container">
-    <h1>Recenst Posts</h1>
+    <h1>Recent Posts</h1>
     <PostPreview v-for="post in posts" :key="post.id" :post="post">
       {{ post.title }}
     </PostPreview>
