@@ -4,7 +4,7 @@ from models import User
 
 
 @app.route("/api/users/<string:username>")
-def user_username(username):
+def user_username(username: str) -> str:
     user = User.objects(username=username).first()
     if user:
         return jsonify(user.to_public_json())

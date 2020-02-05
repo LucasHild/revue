@@ -27,26 +27,26 @@ def sign_up():
     # Hash password with sha256
     hashed_password = generate_password_hash(validated["password"])
 
-    new_user = User(
+    user = User(
         username=validated["username"],
         email=validated["email"],
         password=hashed_password
     ).save()
 
     token = jwt.encode({
-        "username": new_user.username,
-        "email": new_user.email,
-        "password": new_user.password,
-        "created": str(new_user.created)
+        "username": user.username,
+        "email": user.email,
+        "password": user.password,
+        "created": str(user.created)
     }, app.config["SECRET_KEY"])
 
     return jsonify({
         "success": True,
         "user": {
-            "username": new_user.username,
-            "email": new_user.email,
-            "password": new_user.password,
-            "created": str(new_user.created)
+            "username": user.username,
+            "email": user.email,
+            "password": user.password,
+            "created": str(user.created)
         },
         "token": token.decode("UTF-8")
     })

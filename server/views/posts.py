@@ -1,8 +1,6 @@
-import config
-import os
-import uuid
 from schema import Schema, And
 
+import utils
 from app import app
 from flask import jsonify, request
 from models import Post, User, Comment, Subvue
@@ -18,7 +16,7 @@ def posts_index():
 
 @app.route("/api/posts", methods=["POST"])
 @login_required
-def posts_create(username):
+def posts_create(username: str):
     schema = Schema({
         "title": And(str, len, error="Title not specified"),
         "subvue": And(str, len, error="Subvue not specified"),
@@ -35,14 +33,10 @@ def posts_create(username):
 
     image = request.files.get("image")
     if image:
-        if not image.filename.endswith(tuple([".jpg", ".png"])):
-            return jsonify({"error": "Image is not valid"}), 409
+        image_filename = utils.save_image()
 
-        # Generate random filename
-        filename = str(uuid.uuid4()).replace("-", "") + "." + image.filename.split(".")[-1]
-        image.save(os.path.join(config.image_upload_folder, filename))
     else:
-        filename = None
+        image_filename = None
 
     post = Post(
         title=validated["title"],
@@ -50,14 +44,14 @@ def posts_create(username):
         content=validated["content"],
         user=user,
         comments=[],
-        image=filename
+        image=image_filename
     ).save()
 
     return jsonify(post.to_public_json())
 
 
 @app.route("/api/posts/id/<string:id>")
-def posts_item(id):
+def posts_item(id: str):
     try:
         post = Post.objects(pk=id).first()
 
@@ -71,7 +65,7 @@ def posts_item(id):
 
 
 @app.route("/api/posts/user/<string:username>")
-def posts_user(username):
+def posts_user(username: str):
     try:
         user = User.objects(username=username).first()
     except ValidationError:
@@ -84,7 +78,7 @@ def posts_user(username):
 
 @app.route("/api/posts/id/<string:id>", methods=["DELETE"])
 @login_required
-def posts_delete(username, id):
+def posts_delete(username: str, id: str):
     try:
         post = Post.objects(pk=id).first()
 
@@ -107,7 +101,7 @@ def posts_delete(username, id):
 
 @app.route("/api/posts/<string:id>/comments", methods=["POST"])
 @login_required
-def posts_create_comment(username, id):
+def posts_create_comment(username: str, id: str):
     schema = Schema({
         "content": And(str, len, error="No content specified")
     })
@@ -128,7 +122,7 @@ def posts_create_comment(username, id):
 
 @app.route("/api/posts/<string:id>/upvote", methods=["POST"])
 @login_required
-def posts_upvote(username, id):
+def posts_upvote(username: str, id: str):
     try:
         post = Post.objects(pk=id).first()
     except ValidationError:
@@ -161,7 +155,7 @@ def posts_upvote(username, id):
 
 @app.route("/api/posts/<string:id>/downvote", methods=["POST"])
 @login_required
-def posts_downvote(username, id):
+def posts_downvote(username: str, id: str):
     try:
         post = Post.objects(pk=id).first()
     except ValidationError:

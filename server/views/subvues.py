@@ -5,7 +5,7 @@ from authorization import login_required
 
 
 @app.route("/api/subvues/<string:permalink>")
-def subvues_item(permalink):
+def subvues_item(permalink: str):
     subvue = Subvue.objects(permalink__iexact=permalink).first()
 
     if not subvue:
@@ -15,7 +15,7 @@ def subvues_item(permalink):
 
 
 @app.route("/api/subvues/<string:permalink>/posts")
-def subvues_posts(permalink):
+def subvues_posts(permalink: str):
     subvue = Subvue.objects(permalink__iexact=permalink).first()
 
     if not subvue:
@@ -27,7 +27,7 @@ def subvues_posts(permalink):
 
 @app.route("/api/subvues", methods=["POST"])
 @login_required
-def subvues_create(username):
+def subvues_create(username: str):
     if not request.json:
         return jsonify({"error": "Data not specified"}), 409
     if not request.json.get("name"):
@@ -66,7 +66,7 @@ def subvues_create(username):
 
 @app.route("/api/subvues/<string:permalink>/subscribe", methods=["POST"])
 @login_required
-def subvues_subscribe(username, permalink):
+def subvues_subscribe(username: str, permalink: str):
     user = User.objects(username=username).first()
     subvue = Subvue.objects(permalink__iexact=permalink).first()
 
@@ -84,7 +84,7 @@ def subvues_subscribe(username, permalink):
 
 @app.route("/api/subvues/<string:permalink>/unsubscribe", methods=["POST"])
 @login_required
-def subvues_unsubscribe(username, permalink):
+def subvues_unsubscribe(username: str, permalink: str):
     user = User.objects(username=username).first()
     subvue = Subvue.objects(permalink__iexact=permalink).first()
 
