@@ -18,21 +18,14 @@ class User(Document):
     created = DateTimeField(required=True, default=datetime.datetime.now())
 
     def to_public_json(self):
+        hashed_email = hashlib.md5(self.email.encode("utf-8")).hexdigest()
+
         data = {
             "id": str(self.id),
             "username": self.username,
-            "hashedEmail": hashlib.md5(self.email.encode("utf-8")).hexdigest(),
-            "subscribed": [{
-                "id": str(subvue.id),
-                "name": subvue.name,
-                "permalink": subvue.permalink,
-                "description": subvue.description,
-                "moderators": [{
-                    "id": str(moderator.id),
-                    "username": moderator.username
-                } for moderator in subvue.moderators],
-            } for subvue in self.subscribed],
-            "created": self.created.strftime("%Y-%m-%d %H:%M:%S"),
+            "hashedEmail": hashed_email,
+            "subscribed": [subvue.to_public_json() for subvue in self.subscribed],
+            "created": self.created,
         }
 
         return data
@@ -42,6 +35,18 @@ class Comment(EmbeddedDocument):
     content = StringField(max_length=5000)
     user = ReferenceField(User)
     created = DateTimeField(required=True, default=datetime.datetime.now())
+
+    def to_public_json(self):
+        data = {
+            "content": self.content,
+            "created": self.created,
+            "user": {
+                "id": str(self.user.id),
+                "username": self.user.username
+            }
+        }
+
+        return data
 
 
 class Subvue(Document):
@@ -81,30 +86,14 @@ class Post(Document):
         data = {
             "id": str(self.id),
             "title": self.title,
-            "subvue": {
-                "name": self.subvue.name,
-                "permalink": self.subvue.permalink,
-                "description": self.subvue.description,
-                "created": self.subvue.created.strftime("%Y-%m-%d %H:%M:%S"),
-                "moderators": [{
-                    "id": str(moderator.id),
-                    "username": moderator.username
-                } for moderator in self.subvue.moderators],
-            },
+            "subvue": self.subvue.to_public_json(),
             "content": self.content,
             "user": {
                 "id": str(self.user.id),
                 "username": self.user.username
             },
-            "comments": [{
-                "content": comment.content,
-                "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
-                "user": {
-                    "id": str(comment.user.id),
-                    "username": comment.user.username
-                }
-            } for comment in self.comments][::-1],
-            "created": self.created.strftime("%Y-%m-%d %H:%M:%S"),
+            "comments": [comment.to_public_json() for comment in self.comments][::-1],
+            "created": self.created,
             "image": self.image,
             "upvotes": [{
                 "id": str(upvote.id),

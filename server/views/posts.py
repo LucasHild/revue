@@ -27,9 +27,10 @@ def posts_create(username):
     if not request.form.get("content"):
         return jsonify({"error": "Content not specified"}), 409
 
-    subvue = Subvue.objects(permalink__iexact=request.form.get("subvue")).first()
+    subvue_permalink = request.form.get("subvue")
+    subvue = Subvue.objects(permalink__iexact=subvue_permalink).first()
     if not subvue:
-        return jsonify({"error": "Subvue " + request.form.get("subvue") + " not found"}), 404
+        return jsonify({"error": f"Subvue '{subvue_permalink}' not found"}), 404
 
     user = User.objects(username=username).first()
 
@@ -122,15 +123,8 @@ def posts_create_comment(username, id):
     comments.append(Comment(user=user, content=content))
     post.save()
 
-    return jsonify([{
-        "content": comment.content,
-        "created": comment.created.strftime("%Y-%m-%d %H:%M:%S"),
-        "user": {
-            "id": str(comment.user.id),
-            "username": comment.user.username
-        }
-    } for comment in post.comments][::-1]
-    )
+    return jsonify([comment.to_public_json() for comment in post.comments][::-1]
+                   )
 
 
 @app.route("/api/posts/<string:id>/upvote", methods=["POST"])

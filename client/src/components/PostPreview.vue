@@ -9,7 +9,7 @@
       <p>
 
         <span>on {{ post.created }}</span>
-        <span v-show="!hideUser">by <span class="blue-highlight">u/{{ post.user.username }}</span></span>
+        <span v-show="!hideUser">&nbsp;by <span class="blue-highlight">u/{{ post.user.username }}</span></span>
         <span v-show="!hideSubvue">&nbsp;in <span class="blue-highlight">s/{{ post.subvue.name }}</span></span>
         </p>
       <p>{{ description }}</p>
