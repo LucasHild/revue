@@ -37,6 +37,8 @@ from views.posts import *  # noqa
 from views.subvues import *  # noqa
 from views.users import *  # noqa
 
+import errors  # noqa
+
 
 @app.errorhandler(404)
 def page_not_found(e):

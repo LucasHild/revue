@@ -57,6 +57,9 @@ export default {
                         params: { id: response.data.id, subvuePermalink: response.data.subvue.permalink }
                     })
                 })
+                .catch(error => {
+                    this.error = error.response.data.error
+                })
         },
 
         fileChanged(e) {

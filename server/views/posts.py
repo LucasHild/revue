@@ -1,6 +1,7 @@
 import config
 import os
 import uuid
+from schema import Schema, And
 
 from app import app
 from flask import jsonify, request
@@ -18,16 +19,14 @@ def posts_index():
 @app.route("/api/posts", methods=["POST"])
 @login_required
 def posts_create(username):
-    if not request.form:
-        return jsonify({"error": "Data not specified"}), 409
-    if not request.form.get("title"):
-        return jsonify({"error": "Title not specified"}), 409
-    if not request.form.get("subvue"):
-        return jsonify({"error": "Subvue not specified"}), 409
-    if not request.form.get("content"):
-        return jsonify({"error": "Content not specified"}), 409
+    schema = Schema({
+        "title": And(str, len, error="Title not specified"),
+        "subvue": And(str, len, error="Subvue not specified"),
+        "content": And(str, len, error="Content not specified"),
+    })
+    validated = schema.validate(dict(request.form))
 
-    subvue_permalink = request.form.get("subvue")
+    subvue_permalink = validated["subvue"]
     subvue = Subvue.objects(permalink__iexact=subvue_permalink).first()
     if not subvue:
         return jsonify({"error": f"Subvue '{subvue_permalink}' not found"}), 404
@@ -46,9 +45,9 @@ def posts_create(username):
         filename = None
 
     post = Post(
-        title=request.form.get("title"),
+        title=validated["title"],
         subvue=subvue,
-        content=request.form.get("content"),
+        content=validated["content"],
         user=user,
         comments=[],
         image=filename
@@ -109,9 +108,10 @@ def posts_delete(username, id):
 @app.route("/api/posts/<string:id>/comments", methods=["POST"])
 @login_required
 def posts_create_comment(username, id):
-    if not request.json.get('content'):
-        return jsonify({"error": "No content specified"}), 409
-    content = request.json.get('content')
+    schema = Schema({
+        "content": And(str, len, error="No content specified")
+    })
+    validated = schema.validate(request.json)
 
     try:
         post = Post.objects(pk=id).first()
@@ -120,11 +120,10 @@ def posts_create_comment(username, id):
 
     user = User.objects(username=username).first()
     comments = post.comments
-    comments.append(Comment(user=user, content=content))
+    comments.append(Comment(user=user, content=validated["content"]))
     post.save()
 
-    return jsonify([comment.to_public_json() for comment in post.comments][::-1]
-                   )
+    return jsonify([comment.to_public_json() for comment in post.comments][::-1])
 
 
 @app.route("/api/posts/<string:id>/upvote", methods=["POST"])

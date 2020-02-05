@@ -2,3 +2,4 @@ Flask==1.1.1
 Flask-Cors==3.0.8
 mongoengine==0.19.1
 PyJWT==1.7.1
+schema==0.7.1
