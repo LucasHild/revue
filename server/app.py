@@ -13,10 +13,10 @@ def images_get(filename):
     return send_from_directory(config.image_upload_folder, filename)
 
 
-from views.authorization import *
-from views.posts import *
-from views.subvues import *
-from views.users import *
+from views.authentication import *  # noqa
+from views.posts import *  # noqa
+from views.subvues import *  # noqa
+from views.users import *  # noqa
 
 
 @app.errorhandler(404)

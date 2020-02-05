@@ -1,15 +1,13 @@
 import datetime
 import hashlib
 
-from mongoengine import *
+from mongoengine import (
+    connect, Document, EmailField, StringField, ListField, ReferenceField, DateTimeField, EmbeddedDocument,
+    EmbeddedDocumentField, CASCADE
+)
 
 
 connect("revue")
-
-
-class CustomQuerySet(QuerySet):
-    def to_public_json(self):
-        return [doc.to_public_json() for doc in self]
 
 
 class User(Document):
@@ -53,8 +51,6 @@ class Subvue(Document):
     created = DateTimeField(required=True, default=datetime.datetime.now())
     moderators = ListField(ReferenceField(User))
 
-    meta = {'queryset_class': CustomQuerySet}
-
     def to_public_json(self):
         data = {
             "id": str(self.id),
@@ -80,8 +76,6 @@ class Post(Document):
     image = StringField()
     upvotes = ListField(ReferenceField(User, reverse_delete_rule=CASCADE))
     downvotes = ListField(ReferenceField(User, reverse_delete_rule=CASCADE))
-
-    meta = {'queryset_class': CustomQuerySet}
 
     def to_public_json(self):
         data = {

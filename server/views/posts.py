@@ -6,13 +6,13 @@ from app import app
 from flask import jsonify, request
 from models import Post, User, Comment, Subvue
 from mongoengine.errors import ValidationError
-from views.authorization import login_required
+from authorization import login_required
 
 
 @app.route("/api/posts")
 def posts_index():
     posts = Post.objects().order_by("-created")
-    return jsonify(posts.to_public_json())
+    return jsonify([post.to_public_json() for post in posts])
 
 
 @app.route("/api/posts", methods=["POST"])
@@ -79,7 +79,7 @@ def posts_user(username):
 
     posts = Post.objects(user=user).order_by("-created")
 
-    return jsonify(posts.to_public_json())
+    return jsonify([post.to_public_json() for post in posts])
 
 
 @app.route("/api/posts/id/<string:id>", methods=["DELETE"])
