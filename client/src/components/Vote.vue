@@ -13,90 +13,90 @@
 </template>
 
 <script>
-import store from '@/store/store'
+import store from '@/store/index'
 import PostsService from '@/services/PostsService'
 
 export default {
-  name: 'vote',
+    name: 'vote',
 
-  props: ['upvotes', 'downvotes', 'postId'],
+    props: ['upvotes', 'downvotes', 'postId'],
 
-  methods: {
-    upVote() {
-      PostsService.upVote(this.postId)
-        .then(response => {
-          this.upvotes = response.data.upvotes
-          this.downvotes = response.data.downvotes
-        })
-        .catch(e => {
-          this.$emit('error', e.response.data.error)
-        })
-    },
+    methods: {
+        upVote() {
+            PostsService.upVote(this.postId)
+                .then(response => {
+                    this.upvotes = response.data.upvotes
+                    this.downvotes = response.data.downvotes
+                })
+                .catch(e => {
+                    this.$emit('error', e.response.data.error)
+                })
+        },
 
-    downVote() {
-      PostsService.downVote(this.postId)
-        .then(response => {
-          this.upvotes = response.data.upvotes
-          this.downvotes = response.data.downvotes
-        })
-        .catch(e => {
-          this.$emit('error', e.response.data.error)
-        })
-    }
-  },
-
-  computed: {
-    voting() {
-      return this.upvotes.length - this.downvotes.length
-    },
-
-    votedUp() {
-      if (!store.state.isUserLoggedIn) {
-        return false
-      }
-
-      for (var i in this.upvotes) {
-        if (this.upvotes[i].username == store.state.user.username) {
-          return true
+        downVote() {
+            PostsService.downVote(this.postId)
+                .then(response => {
+                    this.upvotes = response.data.upvotes
+                    this.downvotes = response.data.downvotes
+                })
+                .catch(e => {
+                    this.$emit('error', e.response.data.error)
+                })
         }
-      }
-      return false
     },
 
-    votedDown() {
-      if (!store.state.isUserLoggedIn) {
-        return false
-      }
+    computed: {
+        voting() {
+            return this.upvotes.length - this.downvotes.length
+        },
 
-      for (var i in this.downvotes) {
-        if (this.downvotes[i].username == store.state.user.username) {
-          return true
+        votedUp() {
+            if (!store.state.isUserLoggedIn) {
+                return false
+            }
+
+            for (var i in this.upvotes) {
+                if (this.upvotes[i].username == store.state.user.username) {
+                    return true
+                }
+            }
+            return false
+        },
+
+        votedDown() {
+            if (!store.state.isUserLoggedIn) {
+                return false
+            }
+
+            for (var i in this.downvotes) {
+                if (this.downvotes[i].username == store.state.user.username) {
+                    return true
+                }
+            }
+            return false
         }
-      }
-      return false
-    }
-  },
+    },
 }
 </script>
 
 <style lang="css">
 .vote {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .vote p {
-  margin: 10px 0;
+    margin: 10px 0;
 }
 
 .vote svg.active {
-  fill: red;
+    fill: red;
 }
 
 .vote svg:hover {
-  fill: rgb(27, 122, 249);
-  cursor: pointer;
+    fill: rgb(27, 122, 249);
+    cursor: pointer;
 }
 </style>

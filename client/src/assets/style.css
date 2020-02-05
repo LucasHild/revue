@@ -1,0 +1,41 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(48, 99, 219);
+}
+
+*:focus {
+    outline-style: none;
+    -moz-outline-style: none;
+}
+
+.container {
+    padding: 10px 20px;
+}
+
+.button {
+    background: rgb(23, 92, 93) !important;
+    color: white;
+    cursor: pointer;
+}
+
+.error {
+    color: rgb(150, 47, 47);
+    text-align: center;
+}
+
+.deprecated-error {
+    color: rgb(204, 152, 152) !important;
+}

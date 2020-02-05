@@ -1,59 +1,57 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import Home from '@/components/Home'
-import Login from '@/components/Login'
-import SignUp from '@/components/SignUp'
-import Subvue from '@/components/Subvue'
-import Post from '@/components/Post'
-import User from '@/components/User'
-import CreatePost from '@/components/CreatePost'
-import CreateSubvue from '@/components/CreateSubvue'
+import VueRouter from 'vue-router'
 
-Vue.use(Router)
+import Home from '@/views/Home'
 
-require('@/assets/css/style.css')
+Vue.use(VueRouter)
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Home',
-      component: Home
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/signup',
-      name: 'SignUp',
-      component: SignUp
-    },
-    {
-      path: '/s/:name',
-      name: 'Subvue',
-      component: Subvue
-    },
-    {
-      path: '/s/:subvuePermalink/:id',
-      name: 'Post',
-      component: Post
-    },
-    {
-      path: '/u/:username',
-      name: 'User',
-      component: User
-    },
-    {
-      path: '/create',
-      name: 'CreatePost',
-      component: CreatePost
-    },
-    {
-      path: '/create/subvue',
-      name: 'CreateSubvue',
-      component: CreateSubvue
-    }
-  ]
+const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "login" */ '@/views/Login')
+  },
+  {
+    path: '/signup',
+    name: 'SignUp',
+    component: () => import(/* webpackChunkName: "signup" */ '@/views/SignUp')
+  },
+  {
+    path: '/s/:name',
+    name: 'Subvue',
+    component: () => import(/* webpackChunkName: "subvue" */ '@/views/Subvue')
+  },
+  {
+    path: '/s/:subvuePermalink/:id',
+    name: 'Post',
+    component: () => import(/* webpackChunkName: "post" */ '@/views/Post')
+  },
+  {
+    path: '/u/:username',
+    name: 'User',
+    component: () => import(/* webpackChunkName: "user" */ '@/views/User')
+  },
+  {
+    path: '/create',
+    name: 'CreatePost',
+    component: () => import(/* webpackChunkName: "create" */ '@/views/CreatePost')
+  },
+  {
+    path: '/create/subvue',
+    name: 'CreateSubvue',
+    component: () => import(/* webpackChunkName: "createsubvue" */ '@/views/CreateSubvue')
+  },
+]
+
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes
 })
+
+export default router

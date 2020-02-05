@@ -61,137 +61,138 @@ import Vote from '@/components/Vote'
 import PostsService from '@/services/PostsService'
 
 export default {
-  name: 'post',
+    name: 'post',
 
-  components: { Comment, Vote, SubvueInfo, CreateButton },
+    components: { Comment, Vote, SubvueInfo, CreateButton },
 
-  data() {
-    return {
-      error: null,
-      id: this.$route.params.id,
-      title: '',
-      user: '',
-      subvue: null,
-      created: '',
-      content: '',
-      comments: [],
-      upvotes: [],
-      downvotes: [],
-      deleteVerify: false,
+    data() {
+        return {
+            error: null,
+            id: this.$route.params.id,
+            title: '',
+            user: '',
+            subvue: null,
+            created: '',
+            content: '',
+            comments: [],
+            upvotes: [],
+            downvotes: [],
+            deleteVerify: false,
 
-      newCommentContent: '',
-      errorCreateComment: null
-    }
-  },
-
-  methods: {
-    deletePost() {
-      if (this.deleteVerify) {
-        PostsService.delete(this.id)
-          .then(response => {
-            this.$router.push({ name: 'Home' })
-          })
-          .catch(e => {
-            this.error = e.response.data.error
-          })
-      } else {
-        this.deleteVerify = true
-      }
+            newCommentContent: '',
+            errorCreateComment: null
+        }
     },
 
-    createComment() {
-      PostsService.addComment(this.id, this.newCommentContent)
-        .then(response => {
-          this.comments = response.data
-          this.newCommentContent = ''
-          this.errorCreateComment = null
-        })
-        .catch(e => {
-          this.errorCreateComment = e.response.data.error
-        })
-    }
-  },
+    methods: {
+        deletePost() {
+            if (this.deleteVerify) {
+                PostsService.delete(this.id)
+                    .then(() => {
+                        this.$router.push({ name: 'Home' })
+                    })
+                    .catch(e => {
+                        this.error = e.response.data.error
+                    })
+            } else {
+                this.deleteVerify = true
+            }
+        },
 
-  mounted() {
-    PostsService.item(this.id)
-      .then(response => {
-        this.title = response.data.title
-        this.user = response.data.user
-        this.created = response.data.created
-        this.content = response.data.content
-        this.comments = response.data.comments
-        this.upvotes = response.data.upvotes
-        this.downvotes = response.data.downvotes
-        this.subvue = response.data.subvue
-      })
-      .catch(e => {
-        this.error = e.response.data.error
-      })
-  }
+        createComment() {
+            PostsService.addComment(this.id, this.newCommentContent)
+                .then(response => {
+                    this.comments = response.data
+                    this.newCommentContent = ''
+                    this.errorCreateComment = null
+                })
+                .catch(e => {
+                    this.errorCreateComment = e.response.data.error
+                })
+        }
+    },
+
+    mounted() {
+        PostsService.item(this.id)
+            .then(response => {
+                this.title = response.data.title
+                this.user = response.data.user
+                this.created = response.data.created
+                this.content = response.data.content
+                this.comments = response.data.comments
+                this.upvotes = response.data.upvotes
+                this.downvotes = response.data.downvotes
+                this.subvue = response.data.subvue
+            })
+            .catch(e => {
+                this.error = e.response.data.error
+            })
+    }
 }
 </script>
 
 <style scoped lang="css">
 .main-container {
-  width: 80%;
-  float: left;
+    width: 80%;
+    float: left;
 }
 
 .subvue-info {
-  width: 20%;
-  float: right;
+    width: 20%;
+    float: right;
 }
 
-  .body {
+.body {
     background: #eeeeee;
     position: relative;
     display: grid;
     grid-template-columns: 1fr 20fr;
-  }
+}
 
-  #delete-button {
+#delete-button {
     position: absolute;
     right: 15px;
     top: 15px;
     cursor: pointer;
-  }
+}
 
-  #delete-button:hover {
+#delete-button:hover {
     fill: rgb(163, 7, 7);
-  }
+}
 
-  #verify-delete-button {
+#verify-delete-button {
     position: absolute;
     right: 40px;
     top: 15px;
     cursor: pointer;
-  }
+}
 
-  #verify-delete-button:hover {
+#verify-delete-button:hover {
     fill: rgb(7, 163, 70);
-  }
+}
 
-  h1 {
+h1 {
     margin: 0;
-  }
+}
 
-  h3 {
+h3 {
     margin: 0;
     font-weight: 400;
-  }
+}
 
-  .post-id {
+.post-id {
     text-align: right;
     display: block;
-  }
+}
 
-  #comment-form {
+#comment-form {
     max-width: 1500px;
     width: 100%;
     margin: 0 auto;
-  }
+}
 
-  #comment-form textarea, #comment-form input {
+#comment-form textarea,
+#comment-form input {
     display: block;
     width: 100%;
     margin: 0;
@@ -201,7 +202,7 @@ export default {
     margin: 20px 0;
 
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-    box-sizing: border-box;         /* Opera/IE 8+ */
-  }
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
+}
 </style>

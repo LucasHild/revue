@@ -38,7 +38,7 @@ image_upload_folder = ".../revue/server/images"
 cd client
 
 # serve with hot reload at localhost:8080
-npm run dev
+npm run serve
 
 # build for production with minification
 npm run build
@@ -46,7 +46,7 @@ npm run build
 
 ```
 cd server
-python3 app.py
+flask run
 ```
 
 ## Made with
@@ -58,5 +58,5 @@ python3 app.py
 
 ## Meta
 
-Lucas Hild - [https://lucas-hild.de](https://lucas.hild.de)  
+Lucas Hild - [https://lucas-hild.de](https://lucas-hild.de)  
 This project is licensed under the MIT License - see the LICENSE file for details

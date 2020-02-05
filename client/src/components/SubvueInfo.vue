@@ -20,112 +20,103 @@ import SubvuesService from '@/services/SubvuesService'
 import UsersService from '@/services/UsersService'
 
 export default {
-  name: 'subvue-info',
+    name: 'subvue-info',
 
-  props: ['subvue'],
+    props: ['subvue'],
 
-  data() {
-    return {
-      subscribed: false
-    }
-  },
-
-  methods: {
-    subscribe() {
-      if (!this.$store.state.isUserLoggedIn) {
-        this.$router.push({ name: 'Login' });
-        return false
-      }
-
-      SubvuesService.subscribe(this.subvue.permalink)
-        .then(response => {
-          // Save data in store for navbar
-          this.$store.dispatch('updateSubscribedSubvues', response.data.subscribed)
-
-          // Check button
-          this.checkSubscribed();
-        })
-        .catch(e => {
-          console.log(e);
-        })
+    data() {
+        return {
+            subscribed: false
+        }
     },
 
-    unsubscribe() {
-      if (!this.$store.state.isUserLoggedIn) {
-        this.$router.push({ name: 'Login' });
-        return false
-      }
+    methods: {
+        subscribe() {
+            if (!this.$store.state.isUserLoggedIn) {
+                this.$router.push({ name: 'Login' });
+                return false
+            }
 
-      SubvuesService.unsubscribe(this.subvue.permalink)
-        .then(response => {
-          // Save data in store for navbar
-          this.$store.dispatch('updateSubscribedSubvues', response.data.subscribed)
+            SubvuesService.subscribe(this.subvue.permalink)
+                .then(response => {
+                    // Save data in store for navbar
+                    this.$store.dispatch('updateSubscribedSubvues', response.data.subscribed)
 
-          // Check button
-          this.checkSubscribed();
-        })
-        .catch(e => {
-          console.log(e);
-        })
+                    // Check button
+                    this.checkSubscribed();
+                })
+        },
+
+        unsubscribe() {
+            if (!this.$store.state.isUserLoggedIn) {
+                this.$router.push({ name: 'Login' });
+                return false
+            }
+
+            SubvuesService.unsubscribe(this.subvue.permalink)
+                .then(response => {
+                    // Save data in store for navbar
+                    this.$store.dispatch('updateSubscribedSubvues', response.data.subscribed)
+
+                    // Check button
+                    this.checkSubscribed();
+                })
+        },
+
+        checkSubscribed() {
+            if (!this.$store.state.isUserLoggedIn) {
+                return false
+            }
+
+            UsersService.username(this.$store.state.user.username)
+                .then(response => {
+                    var filteredSubscribedSubvues = response.data.subscribed.filter(s => {
+                        return s.permalink == this.subvue.permalink
+                    });
+                    this.subscribed = filteredSubscribedSubvues.length > 0
+                })
+        }
     },
 
-    checkSubscribed() {
-      if (!this.$store.state.isUserLoggedIn) {
-        return false
-      }
+    mounted() {
+        this.checkSubscribed()
+    },
 
-      UsersService.username(this.$store.state.user.username)
-        .then(response => {
-          var filteredSubscribedSubvues = response.data.subscribed.filter(s => {
-            return s.permalink == this.subvue.permalink
-          });
-          this.subscribed = filteredSubscribedSubvues.length > 0
-        })
-        .catch(e => {
-          console.log(e);
-        })
+    watch: {
+        subvue() {
+            this.checkSubscribed()
+        }
     }
-  },
-
-  mounted() {
-    this.checkSubscribed()
-  },
-
-  watch: {
-    subvue() {
-      this.checkSubscribed()
-    }
-  }
 }
 </script>
 
 <style lang="css">
 .heading {
-  color: black;
+    color: black;
 }
 
 .heading:hover {
-  color: rgb(48, 99, 219);
+    color: rgb(48, 99, 219);
 }
 
 .subvue-info {
-  padding: 10px;
+    padding: 10px;
 }
 
 .subscribe-button {
-  background-color: rgb(23, 92, 93);
-  color: white;
-  border: 0;
-  padding: 10px 25px;
-  cursor: pointer;
+    background-color: rgb(23, 92, 93);
+    color: white;
+    border: 0;
+    padding: 10px 25px;
+    cursor: pointer;
 }
 
 .subscribe-button:hover {
-  background-color: rgb(19, 112, 113);
+    background-color: rgb(19, 112, 113);
 }
 
 .moderator {
-  color: rgb(48, 99, 219);
-  cursor: pointer;
+    color: rgb(48, 99, 219);
+    cursor: pointer;
 }
 </style>
